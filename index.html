@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プルタル（提出版）</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏺</text></svg>">
+<meta name="description" content="教科書には載っていない、人物のもう一つの顔を検索する世界史学習アプリ">
+<style>
+  :root{
+    --ink:#1c1710; --ground:#f2ecdd; --surface:#fbf7ee; --surface-2:#e9dfc7;
+    --bronze:#a06a26; --patina:#3c6a5f; --line:rgba(28,23,16,0.15); --muted:#6a5e49;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--ground); color:var(--ink); font-family:"Hiragino Sans","Yu Gothic",system-ui,sans-serif; line-height:1.7;}
+  header{padding:2rem 1.5rem 0.8rem; text-align:center;}
+  h1{font-size:1.8rem; margin:0;}
+  p.tagline{color:var(--muted); margin-top:0.5rem;}
+  main{max-width:800px; margin:0 auto; padding:1.5rem;}
+  .search-row{display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:1.2rem; align-items:center;}
+  input[type="text"], select, button{
+    font-size:0.95rem; padding:0.65rem 1rem; border-radius:6px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink);
+  }
+  input[type="text"]{flex:1; min-width:180px;}
+  button{cursor:pointer;}
+  button.primary{background:var(--bronze); color:#fff8ec; border-color:var(--bronze); font-weight:600;}
+  .toggle{display:flex; align-items:center; gap:0.5rem; margin-left:auto; font-size:0.85rem; color:var(--muted);}
+  .chip-row{display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.2rem;}
+  .chip{
+    font-size:0.85rem; padding:0.4rem 0.9rem; border-radius:99px; border:1px solid var(--line);
+    background:var(--surface); cursor:pointer;
+  }
+  .chip.active{background:var(--bronze); border-color:var(--bronze); color:#fff8ec;}
+  .cards{display:grid; grid-template-columns:1fr 1fr; gap:1rem;}
+  @media (max-width:600px){ .cards{grid-template-columns:1fr;} }
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
+  .card h2{font-size:0.8rem; letter-spacing:0.05em; margin:0 0 0.6rem; color:var(--muted);}
+  .card.hidden h2{color:var(--patina);}
+  .card p{margin:0; font-size:0.95rem;}
+  .meta{font-size:0.8rem; color:var(--muted); margin-top:1rem;}
+  .source{font-size:0.75rem; color:var(--muted); margin-top:0.8rem; border-top:1px dashed var(--line); padding-top:0.6rem;}
+  .source a{color:var(--muted);}
+  .error{color:#a33; margin-top:1rem;}
+  .wiki-card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
+  .wiki-card h2{font-size:0.8rem; letter-spacing:0.05em; margin:0 0 0.6rem; color:var(--patina);}
+  .wiki-card p{margin:0; font-size:0.95rem;}
+  .wiki-badge{
+    display:inline-block; font-size:0.7rem; background:var(--surface-2); color:var(--muted);
+    padding:0.15rem 0.6rem; border-radius:99px; margin-bottom:0.8rem;
+  }
+  .loading{color:var(--muted); font-size:0.9rem;}
+  .suggest-list{
+    list-style:none; margin:0; padding:0; position:relative;
+  }
+  .suggest-list li{
+    padding:0.5rem 0.8rem; cursor:pointer; border:1px solid var(--line); border-top:none;
+    background:var(--surface); font-size:0.9rem;
+  }
+  .suggest-list li:hover{background:var(--surface-2);}
+  footer{text-align:center; color:var(--muted); font-size:0.75rem; padding:2rem 1rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>プルタル</h1>
+  <p class="tagline">教科書には載っていない、人物の「もう一つの顔」を。（提出版：固定フォーマット応答／第7回学力向上アプリコンテスト応募作品）</p>
+</header>
+<main>
+  <div class="search-row">
+    <input type="text" id="searchInput" placeholder="人物名を入力（例: タレス）" autocomplete="off">
+    <button class="primary" id="searchBtn">検索</button>
+    <div class="toggle">
+      出典:
+      <select id="modeSelect">
+        <option value="restricted">制限モード</option>
+        <option value="expanded">拡張モード</option>
+      </select>
+    </div>
+  </div>
+  <ul class="suggest-list" id="suggestList"></ul>
+
+  <div class="chip-row" id="chipRow"></div>
+
+  <div id="result"></div>
+</main>
+<footer>
+  応募区分：個人応募　/　対象科目：世界史　/　提出締切：2026年9月13日
+</footer>
+
+<script src="data/figures.js"></script>
+<script>
+(function(){
+  const resultEl = document.getElementById("result");
+  const chipRow = document.getElementById("chipRow");
+  const searchInput = document.getElementById("searchInput");
+  const suggestList = document.getElementById("suggestList");
+  const modeSelect = document.getElementById("modeSelect");
+
+  // カテゴリ別チップを生成
+  FIGURES.forEach((fig) => {
+    const chip = document.createElement("button");
+    chip.className = "chip";
+    chip.textContent = fig.name;
+    chip.dataset.id = fig.id;
+    chip.addEventListener("click", () => {
+      searchInput.value = fig.name;
+      renderFigure(fig.id);
+      highlightChip(fig.id);
+    });
+    chipRow.appendChild(chip);
+  });
+
+  function highlightChip(id) {
+    chipRow.querySelectorAll(".chip").forEach((c) => {
+      c.classList.toggle("active", c.dataset.id === id);
+    });
+  }
+
+  function findById(id) {
+    return FIGURES.find((f) => f.id === id);
+  }
+
+  function searchByName(query) {
+    const q = query.trim();
+    if (!q) return [];
+    return FIGURES.filter(
+      (f) => f.name.includes(q) || f.name_en.toLowerCase().includes(q.toLowerCase())
+    );
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function renderFigure(id) {
+    const fig = findById(id);
+    if (!fig) return;
+    const mode = modeSelect.value;
+    const sourceLabel =
+      mode === "expanded"
+        ? "拡張モード（提出版では制限モードと同じ内容を表示）"
+        : "制限モード（Wikipedia等に限定）";
+    resultEl.innerHTML = `
+      <div class="card hidden">
+        <h2>もう一つの顔</h2>
+        <p>${fig.hidden_face}</p>
+      </div>
+      <div class="meta">${fig.name}（${fig.name_en}） / ${fig.category}</div>
+      <div class="source">出典: ${fig.source}　|　${sourceLabel}　|　<a href="${fig.source_url}" target="_blank" rel="noopener">参照元を見る</a></div>
+    `;
+  }
+
+  // データベース未収録の人物向け：Wikipedia日本語版のREST APIから
+  // 記事の要約をその場で取得して表示する（AIによる加工は行わず、原文をそのまま表示）
+  async function renderFromWikipedia(query) {
+    resultEl.innerHTML = `<p class="loading">Wikipediaで「${escapeHtml(query)}」を検索しています…</p>`;
+    try {
+      const summaryUrl = `https://ja.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
+      const res = await fetch(summaryUrl);
+      if (!res.ok) {
+        throw new Error("not_found");
+      }
+      const data = await res.json();
+      if (data.type === "disambiguation" || !data.extract) {
+        throw new Error("no_extract");
+      }
+      const pageUrl =
+        (data.content_urls && data.content_urls.desktop && data.content_urls.desktop.page) ||
+        `https://ja.wikipedia.org/wiki/${encodeURIComponent(query)}`;
+      resultEl.innerHTML = `
+        <div class="wiki-card">
+          <span class="wiki-badge">データベース未収録・Wikipediaから直接取得</span>
+          <h2>${escapeHtml(data.title || query)}</h2>
+          <p>${escapeHtml(data.extract)}</p>
+        </div>
+        <div class="source">この内容はWikipedia日本語版から直接取得したものです（「もう一つの顔」への加工はまだ行われていません）。　|　<a href="${pageUrl}" target="_blank" rel="noopener">Wikipediaで読む</a></div>
+      `;
+    } catch (err) {
+      resultEl.innerHTML = `<p class="error">「${escapeHtml(query)}」は提出版の収録データにも、Wikipedia日本語版にも見つかりませんでした。人物名の表記をご確認ください。</p>`;
+    }
+  }
+
+  function renderSuggestions(query) {
+    const matches = searchByName(query);
+    suggestList.innerHTML = "";
+    if (!query.trim() || matches.length === 0) return;
+    matches.slice(0, 6).forEach((f) => {
+      const li = document.createElement("li");
+      li.textContent = `${f.name}（${f.category}）`;
+      li.addEventListener("click", () => {
+        searchInput.value = f.name;
+        suggestList.innerHTML = "";
+        renderFigure(f.id);
+        highlightChip(f.id);
+      });
+      suggestList.appendChild(li);
+    });
+  }
+
+  function handleSearch() {
+    const query = searchInput.value.trim();
+    if (!query) return;
+    const matches = searchByName(query);
+    suggestList.innerHTML = "";
+    if (matches.length === 0) {
+      highlightChip(null);
+      // データベースに無い人物は、Wikipediaからその場で取得を試みる
+      renderFromWikipedia(query);
+      return;
+    }
+    renderFigure(matches[0].id);
+    highlightChip(matches[0].id);
+  }
+
+  document.getElementById("searchBtn").addEventListener("click", handleSearch);
+  searchInput.addEventListener("input", () => renderSuggestions(searchInput.value));
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") handleSearch();
+  });
+  modeSelect.addEventListener("change", () => {
+    const active = chipRow.querySelector(".chip.active");
+    if (active) renderFigure(active.dataset.id);
+  });
+
+  // 初期表示
+  if (FIGURES.length > 0) {
+    renderFigure(FIGURES[0].id);
+    highlightChip(FIGURES[0].id);
+  }
+})();
+</script>
+</body>
+</html>
