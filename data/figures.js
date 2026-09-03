@@ -176,7 +176,7 @@ const FIGURES = [
   },
   {
     id: "zeno_citium",
-    name: "ゼノン（ストア派の祖）",
+    name: "ゼノン",
     name_en: "Zeno of Citium",
     category: "ギリシャ",
     hidden_face:

@@ -26,7 +26,18 @@
   button{cursor:pointer;}
   button.primary{background:var(--bronze); color:#fff8ec; border-color:var(--bronze); font-weight:600;}
   .toggle{display:flex; align-items:center; gap:0.5rem; margin-left:auto; font-size:0.85rem; color:var(--muted);}
+  .chip-toggle{
+    display:block; margin:0 0 0.8rem; font-size:0.85rem; color:var(--muted);
+    background:transparent; border:1px solid var(--line); border-radius:6px;
+    padding:0.5rem 0.9rem; cursor:pointer;
+  }
+  .chip-toggle:hover{background:var(--surface);}
   .chip-row{display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.2rem;}
+  .chip-row[hidden]{display:none;}
+  .intro{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
+  .intro h2{font-size:1rem; margin:0 0 0.6rem; color:var(--patina);}
+  .intro p{margin:0 0 0.7rem; font-size:0.92rem;}
+  .intro p:last-child{margin-bottom:0;}
   .chip{
     font-size:0.85rem; padding:0.4rem 0.9rem; border-radius:99px; border:1px solid var(--line);
     background:var(--surface); cursor:pointer;
@@ -64,7 +75,7 @@
 <body>
 <header>
   <h1>プルタル</h1>
-  <p class="tagline">教科書には載っていない、人物の「もう一つの顔」を。（提出版：固定フォーマット応答／第7回学力向上アプリコンテスト応募作品）</p>
+  <p class="tagline">教科書には載っていない、人物の「もう一つの顔」を。</p>
 </header>
 <main>
   <div class="search-row">
@@ -80,22 +91,28 @@
   </div>
   <ul class="suggest-list" id="suggestList"></ul>
 
-  <div class="chip-row" id="chipRow"></div>
+  <button class="chip-toggle" id="chipToggle" aria-expanded="false">収録人物の一覧を表示</button>
+  <div class="chip-row" id="chipRow" hidden></div>
 
   <div id="result"></div>
 </main>
-<footer>
-  応募区分：個人応募　/　対象科目：世界史　/　提出締切：2026年9月13日
-</footer>
 
 <script src="data/figures.js"></script>
 <script>
 (function(){
   const resultEl = document.getElementById("result");
   const chipRow = document.getElementById("chipRow");
+  const chipToggle = document.getElementById("chipToggle");
   const searchInput = document.getElementById("searchInput");
   const suggestList = document.getElementById("suggestList");
   const modeSelect = document.getElementById("modeSelect");
+
+  chipToggle.addEventListener("click", () => {
+    const isHidden = chipRow.hidden;
+    chipRow.hidden = !isHidden;
+    chipToggle.textContent = isHidden ? "収録人物の一覧を隠す" : "収録人物の一覧を表示";
+    chipToggle.setAttribute("aria-expanded", String(isHidden));
+  });
 
   // カテゴリ別チップを生成
   FIGURES.forEach((fig) => {
@@ -225,11 +242,18 @@
     if (active) renderFigure(active.dataset.id);
   });
 
-  // 初期表示
-  if (FIGURES.length > 0) {
-    renderFigure(FIGURES[0].id);
-    highlightChip(FIGURES[0].id);
+  function renderIntro() {
+    resultEl.innerHTML = `
+      <div class="intro">
+        <h2>プルタルとは</h2>
+        <p>プルタルは、世界史の授業や教科書には載っていない、人物の「もう一つの顔」を検索できるアプリです。教科書の一行の説明だけでは印象に残りにくい人物も、意外なエピソードを知ることで記憶に残りやすくなります。</p>
+        <p>上の検索欄に人物名を入力するか、「収録人物の一覧を表示」から人物を選んで検索してみてください。</p>
+      </div>
+    `;
   }
+
+  // 初期表示（プルタルの説明）
+  renderIntro();
 })();
 </script>
 </body>
