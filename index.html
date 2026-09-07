@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>プルタル（提出版）</title>
+<title>Purutaru</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏺</text></svg>">
 <meta name="description" content="教科書には載っていない、人物のもう一つの顔を検索する世界史学習アプリ">
 <style>
@@ -54,6 +54,15 @@
   .quiz-actions{display:flex; gap:0.6rem; margin-top:1rem; flex-wrap:wrap;}
   .quiz-result{text-align:center;}
   .quiz-result .score{font-size:2rem; color:var(--bronze); font-weight:700; margin:0.4rem 0 1rem;}
+  .quiz-history{margin-top:1.4rem; padding-top:1rem; border-top:1px dashed var(--line); text-align:left;}
+  .quiz-history-summary{font-size:0.85rem; color:var(--patina); margin-bottom:0.6rem; font-weight:600;}
+  .quiz-history-list{list-style:none; margin:0; padding:0; max-height:220px; overflow-y:auto;}
+  .quiz-history-list li{
+    display:flex; justify-content:space-between; gap:0.6rem; font-size:0.85rem; color:var(--muted);
+    padding:0.4rem 0.2rem; border-bottom:1px solid var(--line);
+  }
+  .quiz-history-list li:last-child{border-bottom:none;}
+  .intro-history{font-size:0.85rem; color:var(--patina); margin-top:0.9rem; padding-top:0.9rem; border-top:1px dashed var(--line);}
   .chip-row{display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.2rem;}
   .chip-row[hidden]{display:none;}
   .intro{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
@@ -392,11 +401,20 @@
   });
 
   function renderIntro() {
+    const history = loadQuizHistory();
+    let historyHtml = "";
+    if (history.length > 0) {
+      const totalCorrect = history.reduce((sum, h) => sum + h.correct, 0);
+      const totalQuestions = history.reduce((sum, h) => sum + h.total, 0);
+      const overallRate = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+      historyHtml = `<div class="intro-history">クイズ通算：${history.length} 回挑戦・正答率 ${overallRate}%（このブラウザに保存された記録）</div>`;
+    }
     resultEl.innerHTML = `
       <div class="intro">
         <h2>プルタルとは</h2>
         <p>プルタルは、世界史の授業や教科書には載っていない、人物の「もう一つの顔」を検索できるアプリです。教科書の一行の説明だけでは印象に残りにくい人物も、意外なエピソードを知ることで記憶に残りやすくなります。</p>
         <p>上の検索欄に人物名を入力するか、「収録人物の一覧を表示」から人物を選んで検索してみてください。</p>
+        ${historyHtml}
       </div>
     `;
   }
@@ -500,8 +518,68 @@
     });
   }
 
+  // ---- クイズ履歴（このブラウザ内にのみ保存） ----
+  const QUIZ_HISTORY_KEY = "purutaru_quiz_history";
+  const QUIZ_HISTORY_MAX = 20;
+
+  function loadQuizHistory() {
+    try {
+      const raw = localStorage.getItem(QUIZ_HISTORY_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveQuizResult(correctCount, total) {
+    try {
+      const history = loadQuizHistory();
+      history.unshift({
+        date: new Date().toISOString(),
+        correct: correctCount,
+        total: total,
+      });
+      const trimmed = history.slice(0, QUIZ_HISTORY_MAX);
+      localStorage.setItem(QUIZ_HISTORY_KEY, JSON.stringify(trimmed));
+      return trimmed;
+    } catch (e) {
+      // localStorageが使えない環境では保存しない（履歴は記憶されないだけ）
+      return loadQuizHistory();
+    }
+  }
+
+  function formatQuizDate(isoStr) {
+    const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return "";
+    const mm = d.getMonth() + 1;
+    const dd = d.getDate();
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mi = String(d.getMinutes()).padStart(2, "0");
+    return `${mm}/${dd} ${hh}:${mi}`;
+  }
+
+  function renderQuizHistorySection(history) {
+    if (history.length === 0) return "";
+    const totalCorrect = history.reduce((sum, h) => sum + h.correct, 0);
+    const totalQuestions = history.reduce((sum, h) => sum + h.total, 0);
+    const overallRate = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+    const rows = history
+      .map((h) => {
+        const rate = h.total > 0 ? Math.round((h.correct / h.total) * 100) : 0;
+        return `<li><span class="qh-date">${escapeHtml(formatQuizDate(h.date))}</span><span class="qh-score">${h.correct} / ${h.total} 問（${rate}%）</span></li>`;
+      })
+      .join("");
+    return `
+      <div class="quiz-history">
+        <div class="quiz-history-summary">これまで ${history.length} 回挑戦　|　通算正答率 ${overallRate}%（${totalCorrect} / ${totalQuestions} 問）</div>
+        <ul class="quiz-history-list">${rows}</ul>
+      </div>
+    `;
+  }
+
   function renderQuizResult() {
     const { questions, correctCount } = quizState;
+    const history = saveQuizResult(correctCount, questions.length);
     resultEl.innerHTML = `
       <div class="quiz-card quiz-result">
         <div class="quiz-question-label">クイズ結果</div>
@@ -510,6 +588,7 @@
           <button class="primary" id="quizRetryBtn">もう一度挑戦する</button>
           <button id="quizExitBtn">検索に戻る</button>
         </div>
+        ${renderQuizHistorySection(history)}
       </div>
     `;
     document.getElementById("quizRetryBtn").addEventListener("click", startQuiz);
