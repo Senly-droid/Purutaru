@@ -10,86 +10,71 @@
   :root{
     --ink:#1c1710; --ground:#f2ecdd; --surface:#fbf7ee; --surface-2:#e9dfc7;
     --bronze:#a06a26; --patina:#3c6a5f; --line:rgba(28,23,16,0.15); --muted:#6a5e49;
+    --wrong:#a3382f;
   }
   *{box-sizing:border-box;}
   body{margin:0; background:var(--ground); color:var(--ink); font-family:"Hiragino Sans","Yu Gothic",system-ui,sans-serif; line-height:1.7;}
   header{padding:2rem 1.5rem 0.8rem; text-align:center;}
   h1{font-size:1.8rem; margin:0;}
   p.tagline{color:var(--muted); margin-top:0.5rem;}
-  main{max-width:800px; margin:0 auto; padding:1.5rem;}
+  main{max-width:840px; margin:0 auto; padding:1.5rem;}
+
+  /* --- 検索まわり --- */
   .search-row{display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:1.2rem; align-items:center;}
   input[type="text"], select, button{
     font-size:0.95rem; padding:0.65rem 1rem; border-radius:6px; border:1px solid var(--line);
-    background:var(--surface); color:var(--ink);
+    background:var(--surface); color:var(--ink); font-family:inherit;
   }
   input[type="text"]{flex:1; min-width:180px;}
   button{cursor:pointer;}
   button.primary{background:var(--bronze); color:#fff8ec; border-color:var(--bronze); font-weight:600;}
   .toggle{display:flex; align-items:center; gap:0.5rem; margin-left:auto; font-size:0.85rem; color:var(--muted);}
+  .suggest-list{list-style:none; margin:0; padding:0; position:relative;}
+  .suggest-list li{
+    padding:0.5rem 0.8rem; cursor:pointer; border:1px solid var(--line); border-top:none;
+    background:var(--surface); font-size:0.9rem;
+  }
+  .suggest-list li:hover{background:var(--surface-2);}
+
+  /* --- モード切替ボタン --- */
   .mode-row{display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:0.8rem;}
   .chip-toggle{
-    display:block; margin:0; font-size:0.85rem; color:var(--muted);
-    background:transparent; border:1px solid var(--line); border-radius:6px;
-    padding:0.5rem 0.9rem; cursor:pointer;
+    font-size:0.85rem; color:var(--muted); background:transparent;
+    border:1px solid var(--line); border-radius:6px; padding:0.5rem 0.9rem; cursor:pointer;
   }
   .chip-toggle:hover{background:var(--surface);}
-  .chip-toggle.quiz-start{color:var(--patina); border-color:var(--patina);}
-  .chip-toggle.quiz-start:hover{background:var(--surface);}
-  .quiz-card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
-  .quiz-progress{font-size:0.78rem; color:var(--muted); margin-bottom:0.6rem;}
-  .quiz-question-label{font-size:0.78rem; letter-spacing:0.05em; color:var(--patina); margin-bottom:0.4rem;}
-  .quiz-question{font-size:1.05rem; margin:0 0 1rem; font-weight:600;}
-  .quiz-options{display:grid; grid-template-columns:1fr 1fr; gap:0.6rem;}
-  @media (max-width:600px){ .quiz-options{grid-template-columns:1fr;} }
-  .quiz-option{
-    text-align:left; padding:0.7rem 1rem; border-radius:6px; border:1px solid var(--line);
-    background:var(--ground); cursor:pointer; font-size:0.92rem;
-  }
-  .quiz-option:hover:not(:disabled){background:var(--surface-2);}
-  .quiz-option.correct{background:var(--patina); border-color:var(--patina); color:#fff8ec;}
-  .quiz-option.wrong{background:#a33; border-color:#a33; color:#fff8ec;}
-  .quiz-option:disabled{cursor:default;}
-  .quiz-feedback{margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--line); font-size:0.92rem;}
-  .quiz-feedback p{margin:0 0 0.6rem;}
-  .quiz-actions{display:flex; gap:0.6rem; margin-top:1rem; flex-wrap:wrap;}
-  .quiz-result{text-align:center;}
-  .quiz-result .score{font-size:2rem; color:var(--bronze); font-weight:700; margin:0.4rem 0 1rem;}
-  .quiz-history{margin-top:1.4rem; padding-top:1rem; border-top:1px dashed var(--line); text-align:left;}
-  .quiz-history-summary{font-size:0.85rem; color:var(--patina); margin-bottom:0.6rem; font-weight:600;}
-  .quiz-history-list{list-style:none; margin:0; padding:0; max-height:220px; overflow-y:auto;}
-  .quiz-history-list li{
-    display:flex; justify-content:space-between; gap:0.6rem; font-size:0.85rem; color:var(--muted);
-    padding:0.4rem 0.2rem; border-bottom:1px solid var(--line);
-  }
-  .quiz-history-list li:last-child{border-bottom:none;}
-  .intro-history{font-size:0.85rem; color:var(--patina); margin-top:0.9rem; padding-top:0.9rem; border-top:1px dashed var(--line);}
-  .chip-row{display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.2rem;}
-  .chip-row[hidden]{display:none;}
-  .intro{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
-  .intro h2{font-size:1rem; margin:0 0 0.6rem; color:var(--patina);}
-  .intro p{margin:0 0 0.7rem; font-size:0.92rem;}
-  .intro p:last-child{margin-bottom:0;}
-  .chip{
-    font-size:0.85rem; padding:0.4rem 0.9rem; border-radius:99px; border:1px solid var(--line);
-    background:var(--surface); cursor:pointer;
-  }
-  .chip.active{background:var(--bronze); border-color:var(--bronze); color:#fff8ec;}
+  .chip-toggle.accent{color:var(--patina); border-color:var(--patina);}
+
+  /* --- 人物チップ --- */
   .filter-row{display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.8rem;}
   .filter-row[hidden]{display:none;}
   .filter-chip{
     font-size:0.78rem; padding:0.3rem 0.75rem; border-radius:99px; border:1px solid var(--line);
-    background:transparent; color:var(--muted); cursor:pointer;
+    background:transparent; color:var(--muted); cursor:pointer; font-family:inherit;
   }
   .filter-chip.active{background:var(--patina); border-color:var(--patina); color:#fff8ec;}
   .filter-chip.fav-filter{margin-left:auto;}
+  .chip-row{display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.2rem;}
+  .chip-row[hidden]{display:none;}
+  .chip{
+    font-size:0.85rem; padding:0.4rem 0.9rem; border-radius:99px; border:1px solid var(--line);
+    background:var(--surface); cursor:pointer; font-family:inherit;
+  }
+  .chip.active{background:var(--bronze); border-color:var(--bronze); color:#fff8ec;}
   .chip[hidden]{display:none;}
+
+  /* --- 人物カード --- */
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
+  .card h2{font-size:0.8rem; letter-spacing:0.05em; margin:0 0 0.6rem; color:var(--muted);}
+  .card.hidden h2{color:var(--patina);}
+  .card p{margin:0; font-size:0.95rem;}
+  .card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;}
+  .card-head h2{margin:0;}
   .fav-star{
     background:transparent; border:none; cursor:pointer; font-size:1.3rem; line-height:1;
     padding:0.1rem 0.3rem; color:var(--muted); vertical-align:middle;
   }
   .fav-star.active{color:var(--bronze);}
-  .card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;}
-  .card-head h2{margin:0;}
   .achievement{
     font-size:0.88rem; color:var(--muted); background:var(--surface-2);
     border-radius:8px; padding:0.7rem 1rem; margin-bottom:0.8rem;
@@ -98,16 +83,11 @@
     display:block; font-size:0.72rem; letter-spacing:0.05em; color:var(--muted);
     margin-bottom:0.2rem; opacity:0.8;
   }
-  .cards{display:grid; grid-template-columns:1fr 1fr; gap:1rem;}
-  @media (max-width:600px){ .cards{grid-template-columns:1fr;} }
-  .card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
-  .card h2{font-size:0.8rem; letter-spacing:0.05em; margin:0 0 0.6rem; color:var(--muted);}
-  .card.hidden h2{color:var(--patina);}
-  .card p{margin:0; font-size:0.95rem;}
   .meta{font-size:0.8rem; color:var(--muted); margin-top:1rem;}
   .source{font-size:0.75rem; color:var(--muted); margin-top:0.8rem; border-top:1px dashed var(--line); padding-top:0.6rem;}
   .source a{color:var(--muted);}
-  .error{color:#a33; margin-top:1rem;}
+  .error{color:var(--wrong); margin-top:1rem;}
+  .loading{color:var(--muted); font-size:0.9rem;}
   .wiki-card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
   .wiki-card h2{font-size:0.8rem; letter-spacing:0.05em; margin:0 0 0.6rem; color:var(--patina);}
   .wiki-card p{margin:0; font-size:0.95rem;}
@@ -115,16 +95,100 @@
     display:inline-block; font-size:0.7rem; background:var(--surface-2); color:var(--muted);
     padding:0.15rem 0.6rem; border-radius:99px; margin-bottom:0.8rem;
   }
-  .loading{color:var(--muted); font-size:0.9rem;}
-  .suggest-list{
-    list-style:none; margin:0; padding:0; position:relative;
+
+  /* --- つながり（相関） --- */
+  .rel-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:1.2rem 1.3rem; margin-top:1rem;
   }
-  .suggest-list li{
-    padding:0.5rem 0.8rem; cursor:pointer; border:1px solid var(--line); border-top:none;
-    background:var(--surface); font-size:0.9rem;
+  .rel-card h2{font-size:0.8rem; letter-spacing:0.05em; margin:0 0 0.8rem; color:var(--patina);}
+  .rel-list{list-style:none; margin:0; padding:0;}
+  .rel-list li{padding:0.6rem 0; border-bottom:1px solid var(--line);}
+  .rel-list li:last-child{border-bottom:none;}
+  .rel-head{display:flex; align-items:baseline; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.2rem;}
+  .rel-type{
+    font-size:0.7rem; padding:0.1rem 0.5rem; border-radius:99px;
+    background:var(--surface-2); color:var(--muted); white-space:nowrap;
   }
-  .suggest-list li:hover{background:var(--surface-2);}
-  footer{text-align:center; color:var(--muted); font-size:0.75rem; padding:2rem 1rem;}
+  .rel-name{
+    background:none; border:none; padding:0; font:inherit; font-size:0.92rem; font-weight:600;
+    color:var(--bronze); cursor:pointer; text-decoration:underline; text-underline-offset:3px;
+  }
+  .rel-dir{font-size:0.75rem; color:var(--muted);}
+  .rel-label{margin:0; font-size:0.88rem; color:var(--ink);}
+
+  /* --- 相関図 --- */
+  .graph-card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
+  .graph-scroll{overflow-x:auto; margin:0 -0.4rem;}
+  .graph-svg{display:block; width:100%; min-width:640px; height:auto; touch-action:pan-y;}
+  .gnode circle{stroke:var(--surface); stroke-width:1.5; cursor:pointer;}
+  .gnode text{font-size:9px; fill:var(--ink); pointer-events:none; text-anchor:middle;}
+  .gnode.dim{opacity:0.18;}
+  .gnode.sel circle{stroke:var(--ink); stroke-width:2;}
+  .gnode.sel text{font-weight:700; font-size:11px;}
+  .gedge{stroke:var(--muted); stroke-opacity:0.28; fill:none;}
+  .gedge.dim{stroke-opacity:0.05;}
+  .gedge.hot{stroke:var(--bronze); stroke-opacity:0.85; stroke-width:2;}
+  .graph-legend{display:flex; gap:1rem; flex-wrap:wrap; font-size:0.78rem; color:var(--muted); margin-top:0.6rem;}
+  .legend-dot{display:inline-block; width:0.7rem; height:0.7rem; border-radius:50%; margin-right:0.3rem; vertical-align:-1px;}
+  .graph-hint{font-size:0.82rem; color:var(--muted); margin:0 0 0.8rem;}
+  .graph-detail{margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--line);}
+
+  /* --- クイズ --- */
+  .quiz-card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
+  .quiz-progress{font-size:0.78rem; color:var(--muted); margin-bottom:0.6rem;}
+  .quiz-question-label{font-size:0.78rem; letter-spacing:0.05em; color:var(--patina); margin-bottom:0.4rem;}
+  .quiz-question{font-size:1.05rem; margin:0 0 1rem; font-weight:600;}
+  .quiz-options{display:grid; grid-template-columns:1fr 1fr; gap:0.6rem;}
+  .quiz-options.wide{grid-template-columns:1fr;}
+  @media (max-width:600px){ .quiz-options{grid-template-columns:1fr;} }
+  .quiz-option{
+    text-align:left; padding:0.7rem 1rem; border-radius:6px; border:1px solid var(--line);
+    background:var(--ground); cursor:pointer; font-size:0.92rem; font-family:inherit; color:var(--ink);
+  }
+  .quiz-option:hover:not(:disabled){background:var(--surface-2);}
+  .quiz-option.correct{background:var(--patina); border-color:var(--patina); color:#fff8ec;}
+  .quiz-option.wrong{background:var(--wrong); border-color:var(--wrong); color:#fff8ec;}
+  .quiz-option:disabled{cursor:default;}
+  .quiz-feedback{margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--line); font-size:0.92rem;}
+  .quiz-feedback p{margin:0 0 0.6rem;}
+  .quiz-actions{display:flex; gap:0.6rem; margin-top:1rem; flex-wrap:wrap;}
+  .quiz-result{text-align:center;}
+  .quiz-result .score{font-size:2rem; color:var(--bronze); font-weight:700; margin:0.4rem 0 0.6rem;}
+  .quiz-result .score-sub{font-size:0.85rem; color:var(--muted); margin-bottom:1rem;}
+  .timer-wrap{height:4px; background:var(--surface-2); border-radius:99px; overflow:hidden; margin-bottom:0.9rem;}
+  .timer-bar{height:100%; background:var(--patina); width:100%; transition:width 0.1s linear;}
+  .timer-bar.urgent{background:var(--wrong);}
+  .quiz-timeout{color:var(--wrong); font-weight:600;}
+
+  /* --- クイズ設定 --- */
+  .setup-group{margin-bottom:1.1rem;}
+  .setup-label{font-size:0.78rem; letter-spacing:0.05em; color:var(--patina); margin-bottom:0.45rem;}
+  .setup-opts{display:flex; gap:0.45rem; flex-wrap:wrap;}
+  .setup-opt{
+    font-size:0.82rem; padding:0.35rem 0.8rem; border-radius:99px; border:1px solid var(--line);
+    background:var(--ground); color:var(--muted); cursor:pointer; font-family:inherit;
+  }
+  .setup-opt.active{background:var(--bronze); border-color:var(--bronze); color:#fff8ec;}
+  .setup-note{font-size:0.78rem; color:var(--muted); margin:0.4rem 0 0;}
+
+  /* --- 履歴 --- */
+  .quiz-history{margin-top:1.4rem; padding-top:1rem; border-top:1px dashed var(--line); text-align:left;}
+  .quiz-history-summary{font-size:0.85rem; color:var(--patina); margin-bottom:0.6rem; font-weight:600;}
+  .quiz-history-list{list-style:none; margin:0; padding:0; max-height:220px; overflow-y:auto;}
+  .quiz-history-list li{
+    display:flex; justify-content:space-between; gap:0.6rem; font-size:0.85rem; color:var(--muted);
+    padding:0.4rem 0.2rem; border-bottom:1px solid var(--line);
+  }
+  .quiz-history-list li:last-child{border-bottom:none;}
+  .qh-mode{font-size:0.75rem; opacity:0.85;}
+
+  /* --- はじめの説明 --- */
+  .intro{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
+  .intro h2{font-size:1rem; margin:0 0 0.6rem; color:var(--patina);}
+  .intro p{margin:0 0 0.7rem; font-size:0.92rem;}
+  .intro p:last-child{margin-bottom:0;}
+  .intro-history{font-size:0.85rem; color:var(--patina); margin-top:0.9rem; padding-top:0.9rem; border-top:1px dashed var(--line);}
 </style>
 </head>
 <body>
@@ -148,7 +212,8 @@
 
   <div class="mode-row">
     <button class="chip-toggle" id="chipToggle" aria-expanded="false">収録人物の一覧を表示</button>
-    <button class="chip-toggle quiz-start" id="quizStartBtn">クイズに挑戦する</button>
+    <button class="chip-toggle accent" id="quizStartBtn">クイズに挑戦する</button>
+    <button class="chip-toggle accent" id="graphBtn">相関図を見る</button>
   </div>
   <div class="filter-row" id="filterRow" hidden></div>
   <div class="chip-row" id="chipRow" hidden></div>
@@ -157,76 +222,90 @@
 </main>
 
 <script src="data/figures.js"></script>
+<script src="data/relations.js"></script>
 <script>
 (function(){
-  const resultEl = document.getElementById("result");
-  const chipRow = document.getElementById("chipRow");
-  const chipToggle = document.getElementById("chipToggle");
-  const filterRow = document.getElementById("filterRow");
-  const searchInput = document.getElementById("searchInput");
-  const suggestList = document.getElementById("suggestList");
-  const modeSelect = document.getElementById("modeSelect");
+  "use strict";
 
-  // ---- お気に入り機能（このブラウザ内にのみ保存） ----
+  const resultEl   = document.getElementById("result");
+  const chipRow    = document.getElementById("chipRow");
+  const chipToggle = document.getElementById("chipToggle");
+  const filterRow  = document.getElementById("filterRow");
+  const searchInput= document.getElementById("searchInput");
+  const suggestList= document.getElementById("suggestList");
+  const modeSelect = document.getElementById("modeSelect");
+  const quizStartBtn = document.getElementById("quizStartBtn");
+  const graphBtn   = document.getElementById("graphBtn");
+
+  /* =========================================================
+     共通ユーティリティ
+     ========================================================= */
+  function escapeHtml(str){
+    const div = document.createElement("div");
+    div.textContent = str == null ? "" : String(str);
+    return div.innerHTML;
+  }
+  function shuffle(arr){
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function findById(id){ return FIGURES.find((f) => f.id === id); }
+  function nameOf(id){ const f = findById(id); return f ? f.name : id; }
+
+  /* =========================================================
+     お気に入り（このブラウザ内にのみ保存）
+     ========================================================= */
   const FAV_KEY = "purutaru_favorites";
-  function loadFavorites() {
-    try {
+  function loadFavorites(){
+    try{
       const raw = localStorage.getItem(FAV_KEY);
       return raw ? new Set(JSON.parse(raw)) : new Set();
-    } catch (e) {
-      return new Set();
-    }
+    }catch(e){ return new Set(); }
   }
-  function saveFavorites(set) {
-    try {
-      localStorage.setItem(FAV_KEY, JSON.stringify([...set]));
-    } catch (e) {
-      // localStorageが使えない環境では保存しない（お気に入りは記憶されないだけ）
-    }
+  function saveFavorites(set){
+    try{ localStorage.setItem(FAV_KEY, JSON.stringify([...set])); }catch(e){}
   }
   let favorites = loadFavorites();
-  function isFavorite(id) {
-    return favorites.has(id);
-  }
-  function toggleFavorite(id) {
-    if (favorites.has(id)) {
-      favorites.delete(id);
-    } else {
-      favorites.add(id);
-    }
+  const isFavorite = (id) => favorites.has(id);
+  function toggleFavorite(id){
+    if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
     saveFavorites(favorites);
   }
 
+  /* =========================================================
+     人物一覧チップと絞り込み
+     ========================================================= */
   let showFavoritesOnly = false;
   let activeGenre = "all";
 
   chipToggle.addEventListener("click", () => {
-    const isHidden = chipRow.hidden;
-    chipRow.hidden = !isHidden;
-    filterRow.hidden = !isHidden;
-    chipToggle.textContent = isHidden ? "収録人物の一覧を隠す" : "収録人物の一覧を表示";
-    chipToggle.setAttribute("aria-expanded", String(isHidden));
+    const willShow = chipRow.hidden;
+    chipRow.hidden = !willShow;
+    filterRow.hidden = !willShow;
+    chipToggle.textContent = willShow ? "収録人物の一覧を隠す" : "収録人物の一覧を表示";
+    chipToggle.setAttribute("aria-expanded", String(willShow));
   });
 
-  // ---- ジャンル絞り込みチップを生成 ----
-  const genres = [...new Set(FIGURES.map((f) => f.genre))];
-  function buildFilterRow() {
-    filterRow.innerHTML = "";
-    const allBtn = document.createElement("button");
-    allBtn.className = "filter-chip active";
-    allBtn.textContent = "すべて";
-    allBtn.dataset.genre = "all";
-    allBtn.addEventListener("click", () => setGenreFilter("all"));
-    filterRow.appendChild(allBtn);
+  const genres  = [...new Set(FIGURES.map((f) => f.genre))];
+  const regions = [...new Set(FIGURES.map((f) => f.category))];
 
-    genres.forEach((g) => {
-      const btn = document.createElement("button");
-      btn.className = "filter-chip";
-      btn.textContent = g;
-      btn.dataset.genre = g;
-      btn.addEventListener("click", () => setGenreFilter(g));
-      filterRow.appendChild(btn);
-    });
+  (function buildFilterRow(){
+    filterRow.innerHTML = "";
+    const mk = (text, value) => {
+      const b = document.createElement("button");
+      b.className = "filter-chip" + (value === "all" ? " active" : "");
+      b.textContent = text;
+      b.dataset.genre = value;
+      b.addEventListener("click", () => setGenreFilter(value));
+      filterRow.appendChild(b);
+    };
+    mk("すべて", "all");
+    regions.forEach((r) => mk(r, "region:" + r));
+    genres.forEach((g) => mk(g, "genre:" + g));
 
     const favBtn = document.createElement("button");
     favBtn.className = "filter-chip fav-filter";
@@ -237,17 +316,23 @@
       renderChips();
     });
     filterRow.appendChild(favBtn);
-  }
-  function setGenreFilter(genre) {
-    activeGenre = genre;
+  })();
+
+  function setGenreFilter(value){
+    activeGenre = value;
     filterRow.querySelectorAll(".filter-chip:not(.fav-filter)").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.genre === genre);
+      btn.classList.toggle("active", btn.dataset.genre === value);
     });
     renderChips();
   }
-  buildFilterRow();
 
-  // ---- 人物一覧チップを生成（絞り込み条件に応じて表示/非表示） ----
+  function matchesScope(fig, scope){
+    if (!scope || scope === "all") return true;
+    if (scope.startsWith("region:")) return fig.category === scope.slice(7);
+    if (scope.startsWith("genre:"))  return fig.genre === scope.slice(6);
+    return true;
+  }
+
   const chipEls = new Map();
   FIGURES.forEach((fig) => {
     const chip = document.createElement("button");
@@ -263,49 +348,102 @@
     chipEls.set(fig.id, chip);
   });
 
-  function renderChips() {
+  function renderChips(){
     FIGURES.forEach((fig) => {
       const chip = chipEls.get(fig.id);
-      const genreOk = activeGenre === "all" || fig.genre === activeGenre;
+      const scopeOk = matchesScope(fig, activeGenre);
       const favOk = !showFavoritesOnly || isFavorite(fig.id);
-      chip.hidden = !(genreOk && favOk);
+      chip.hidden = !(scopeOk && favOk);
     });
   }
   renderChips();
 
-  function highlightChip(id) {
+  function highlightChip(id){
     chipRow.querySelectorAll(".chip").forEach((c) => {
       c.classList.toggle("active", c.dataset.id === id);
     });
   }
 
-  function findById(id) {
-    return FIGURES.find((f) => f.id === id);
+  /* =========================================================
+     相関データの索引づくり
+     ========================================================= */
+  const relByFigure = new Map();
+  FIGURES.forEach((f) => relByFigure.set(f.id, []));
+  RELATIONS.forEach((rel) => {
+    if (relByFigure.has(rel.from)) relByFigure.get(rel.from).push({ rel, dir: "out", other: rel.to });
+    if (relByFigure.has(rel.to))   relByFigure.get(rel.to).push({ rel, dir: "in",  other: rel.from });
+  });
+
+  // その人物から見た関係の説明（矢印の向きで言い回しを変える）
+  function relDirText(entry){
+    const t = entry.rel.type;
+    if (entry.dir === "out"){
+      switch(t){
+        case "師弟": return "の師とされる";
+        case "影響": return "から影響を受けた";
+        case "論敵": return "を批判・風刺した";
+        case "記録": return "について書き残した";
+        case "友人": return "と親交があった";
+        case "競合": return "と競い合った";
+        case "政敵": return "と政治的に対立した";
+        default:     return "とつながりがある";
+      }
+    }
+    switch(t){
+      case "師弟": return "の弟子とされる";
+      case "影響": return "に影響を与えた";
+      case "論敵": return "から批判・風刺された";
+      case "記録": return "が書き残した";
+      case "友人": return "と親交があった";
+      case "競合": return "と競い合った";
+      case "政敵": return "と対立した";
+      default:     return "とつながりがある";
+    }
   }
 
-  function searchByName(query) {
-    const q = query.trim();
-    if (!q) return [];
-    return FIGURES.filter(
-      (f) => f.name.includes(q) || f.name_en.toLowerCase().includes(q.toLowerCase())
-    );
+  function renderRelationsCard(figId){
+    const entries = relByFigure.get(figId) || [];
+    if (entries.length === 0) return "";
+    const items = entries.map((e) => `
+      <li>
+        <div class="rel-head">
+          <span class="rel-type">${escapeHtml(e.rel.type)}</span>
+          <button class="rel-name" data-goto="${escapeHtml(e.other)}">${escapeHtml(nameOf(e.other))}</button>
+          <span class="rel-dir">${escapeHtml(relDirText(e))}</span>
+        </div>
+        <p class="rel-label">${escapeHtml(e.rel.label)}</p>
+      </li>
+    `).join("");
+    return `
+      <div class="rel-card">
+        <h2>ほかの人物とのつながり（${entries.length}件）</h2>
+        <ul class="rel-list">${items}</ul>
+      </div>
+    `;
   }
 
-  function escapeHtml(str) {
-    const div = document.createElement("div");
-    div.textContent = str;
-    return div.innerHTML;
+  function bindRelationLinks(){
+    resultEl.querySelectorAll("[data-goto]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.goto;
+        searchInput.value = nameOf(id);
+        renderFigure(id);
+        highlightChip(id);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
   }
 
-  function renderFigure(id) {
+  /* =========================================================
+     人物カードの表示
+     ========================================================= */
+  function renderFigure(id){
     const fig = findById(id);
     if (!fig) return;
-    const mode = modeSelect.value;
-    const sourceLabel =
-      mode === "expanded"
-        ? "拡張モード（提出版では制限モードと同じ内容を表示）"
-        : "制限モード（Wikipedia等に限定）";
-    const favActive = isFavorite(fig.id);
+    const sourceLabel = modeSelect.value === "expanded"
+      ? "拡張モード（提出版では制限モードと同じ内容を表示）"
+      : "制限モード（Wikipedia等に限定）";
+    const fav = isFavorite(fig.id);
     const achievementHtml = fig.achievement
       ? `<div class="achievement"><span class="achievement-label">教科書での実績</span>${escapeHtml(fig.achievement)}</div>`
       : "";
@@ -314,34 +452,33 @@
       <div class="card hidden">
         <div class="card-head">
           <h2>もう一つの顔</h2>
-          <button class="fav-star${favActive ? " active" : ""}" id="favBtn" title="お気に入りに登録/解除" aria-pressed="${favActive}">${favActive ? "★" : "☆"}</button>
+          <button class="fav-star${fav ? " active" : ""}" id="favBtn" title="お気に入りに登録/解除" aria-pressed="${fav}">${fav ? "★" : "☆"}</button>
         </div>
-        <p>${fig.hidden_face}</p>
+        <p>${escapeHtml(fig.hidden_face)}</p>
       </div>
-      <div class="meta">${fig.name}（${fig.name_en}） / ${fig.category}・${fig.genre}</div>
-      <div class="source">出典: ${fig.source}　|　${sourceLabel}　|　<a href="${fig.source_url}" target="_blank" rel="noopener">参照元を見る</a></div>
+      <div class="meta">${escapeHtml(fig.name)}（${escapeHtml(fig.name_en)}） / ${escapeHtml(fig.category)}・${escapeHtml(fig.genre)}</div>
+      <div class="source">出典: ${escapeHtml(fig.source)}　|　${sourceLabel}　|　<a href="${escapeHtml(fig.source_url)}" target="_blank" rel="noopener">参照元を見る</a></div>
+      ${renderRelationsCard(fig.id)}
     `;
     document.getElementById("favBtn").addEventListener("click", () => {
       toggleFavorite(fig.id);
       renderFigure(id);
       renderChips();
     });
+    bindRelationLinks();
   }
 
-  // データベース未収録の人物向け：Wikipedia日本語版のREST APIから
-  // 記事の要約をその場で取得して表示する（AIによる加工は行わず、原文をそのまま表示）
-  async function renderFromWikipedia(query) {
+  /* =========================================================
+     Wikipedia直接取得（データベース未収録の人物向け）
+     ========================================================= */
+  async function renderFromWikipedia(query){
     resultEl.innerHTML = `<p class="loading">Wikipediaで「${escapeHtml(query)}」を検索しています…</p>`;
-    try {
-      const summaryUrl = `https://ja.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
-      const res = await fetch(summaryUrl);
-      if (!res.ok) {
-        throw new Error("not_found");
-      }
+    try{
+      const url = `https://ja.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("not_found");
       const data = await res.json();
-      if (data.type === "disambiguation" || !data.extract) {
-        throw new Error("no_extract");
-      }
+      if (data.type === "disambiguation" || !data.extract) throw new Error("no_extract");
       const pageUrl =
         (data.content_urls && data.content_urls.desktop && data.content_urls.desktop.page) ||
         `https://ja.wikipedia.org/wiki/${encodeURIComponent(query)}`;
@@ -351,20 +488,31 @@
           <h2>${escapeHtml(data.title || query)}</h2>
           <p>${escapeHtml(data.extract)}</p>
         </div>
-        <div class="source">この内容はWikipedia日本語版から直接取得したものです（「もう一つの顔」への加工はまだ行われていません）。　|　<a href="${pageUrl}" target="_blank" rel="noopener">Wikipediaで読む</a></div>
+        <div class="source">この内容はWikipedia日本語版から直接取得したものです（「もう一つの顔」への加工はまだ行われていません）。　|　<a href="${escapeHtml(pageUrl)}" target="_blank" rel="noopener">Wikipediaで読む</a></div>
       `;
-    } catch (err) {
+    }catch(err){
       resultEl.innerHTML = `<p class="error">「${escapeHtml(query)}」は提出版の収録データにも、Wikipedia日本語版にも見つかりませんでした。人物名の表記をご確認ください。</p>`;
     }
   }
 
-  function renderSuggestions(query) {
+  /* =========================================================
+     検索
+     ========================================================= */
+  function searchByName(query){
+    const q = query.trim();
+    if (!q) return [];
+    return FIGURES.filter((f) =>
+      f.name.includes(q) || f.name_en.toLowerCase().includes(q.toLowerCase())
+    );
+  }
+
+  function renderSuggestions(query){
     const matches = searchByName(query);
     suggestList.innerHTML = "";
     if (!query.trim() || matches.length === 0) return;
     matches.slice(0, 6).forEach((f) => {
       const li = document.createElement("li");
-      li.textContent = `${f.name}（${f.category}）`;
+      li.textContent = `${f.name}（${f.category}・${f.genre}）`;
       li.addEventListener("click", () => {
         searchInput.value = f.name;
         suggestList.innerHTML = "";
@@ -375,14 +523,14 @@
     });
   }
 
-  function handleSearch() {
+  function handleSearch(){
     const query = searchInput.value.trim();
     if (!query) return;
+    stopTimer();
     const matches = searchByName(query);
     suggestList.innerHTML = "";
-    if (matches.length === 0) {
+    if (matches.length === 0){
       highlightChip(null);
-      // データベースに無い人物は、Wikipediaからその場で取得を試みる
       renderFromWikipedia(query);
       return;
     }
@@ -392,65 +540,210 @@
 
   document.getElementById("searchBtn").addEventListener("click", handleSearch);
   searchInput.addEventListener("input", () => renderSuggestions(searchInput.value));
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") handleSearch();
-  });
+  searchInput.addEventListener("keydown", (e) => { if (e.key === "Enter") handleSearch(); });
   modeSelect.addEventListener("change", () => {
     const active = chipRow.querySelector(".chip.active");
-    if (active) renderFigure(active.dataset.id);
+    if (active && !quizState) renderFigure(active.dataset.id);
   });
 
-  function renderIntro() {
-    const history = loadQuizHistory();
-    let historyHtml = "";
-    if (history.length > 0) {
-      const totalCorrect = history.reduce((sum, h) => sum + h.correct, 0);
-      const totalQuestions = history.reduce((sum, h) => sum + h.total, 0);
-      const overallRate = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
-      historyHtml = `<div class="intro-history">クイズ通算：${history.length} 回挑戦・正答率 ${overallRate}%（このブラウザに保存された記録）</div>`;
-    }
-    resultEl.innerHTML = `
-      <div class="intro">
-        <h2>プルタルとは</h2>
-        <p>プルタルは、世界史の授業や教科書には載っていない、人物の「もう一つの顔」を検索できるアプリです。教科書の一行の説明だけでは印象に残りにくい人物も、意外なエピソードを知ることで記憶に残りやすくなります。</p>
-        <p>上の検索欄に人物名を入力するか、「収録人物の一覧を表示」から人物を選んで検索してみてください。</p>
-        ${historyHtml}
+  /* =========================================================
+     クイズ履歴
+     ========================================================= */
+  const QUIZ_HISTORY_KEY = "purutaru_quiz_history";
+  const QUIZ_HISTORY_MAX = 20;
+
+  function loadQuizHistory(){
+    try{
+      const raw = localStorage.getItem(QUIZ_HISTORY_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveQuizResult(correct, total, note){
+    try{
+      const history = loadQuizHistory();
+      history.unshift({ date: new Date().toISOString(), correct, total, note: note || "" });
+      const trimmed = history.slice(0, QUIZ_HISTORY_MAX);
+      localStorage.setItem(QUIZ_HISTORY_KEY, JSON.stringify(trimmed));
+      return trimmed;
+    }catch(e){ return loadQuizHistory(); }
+  }
+  function formatQuizDate(iso){
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mi = String(d.getMinutes()).padStart(2, "0");
+    return `${d.getMonth() + 1}/${d.getDate()} ${hh}:${mi}`;
+  }
+  function renderQuizHistorySection(history){
+    if (history.length === 0) return "";
+    const totalCorrect = history.reduce((s, h) => s + h.correct, 0);
+    const totalQuestions = history.reduce((s, h) => s + h.total, 0);
+    const rate = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+    const rows = history.map((h) => {
+      const r = h.total > 0 ? Math.round((h.correct / h.total) * 100) : 0;
+      const note = h.note ? `<span class="qh-mode">${escapeHtml(h.note)}</span>` : "<span></span>";
+      return `<li><span>${escapeHtml(formatQuizDate(h.date))}</span>${note}<span>${h.correct} / ${h.total}（${r}%）</span></li>`;
+    }).join("");
+    return `
+      <div class="quiz-history">
+        <div class="quiz-history-summary">これまで ${history.length} 回挑戦　|　通算正答率 ${rate}%（${totalCorrect} / ${totalQuestions} 問）</div>
+        <ul class="quiz-history-list">${rows}</ul>
       </div>
     `;
   }
 
-  // ---- クイズ機能 ----
-  // 教科書に載っている「実績」を問題文にし、人物名を4択で当てるクイズ。
-  // 正解すると「もう一つの顔」も続けて表示され、暗記の助けになるようにしている。
-  const QUIZ_LENGTH = 8;
-  const quizStartBtn = document.getElementById("quizStartBtn");
+  /* =========================================================
+     クイズ
+     ========================================================= */
   let quizState = null;
 
-  function shuffle(arr) {
-    const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
+  const quizSettings = {
+    format: "mix",     // achievement（実績→人物名） / name（人物名→実績） / mix
+    scope: "all",      // all / region:ギリシャ / genre:哲学者 ...
+    count: 8,          // 問題数
+    timeLimit: 0,      // 0 = 制限なし、それ以外は秒
+  };
+
+  const FORMAT_LABEL = {
+    achievement: "実績→人物名",
+    name: "人物名→実績",
+    mix: "ミックス",
+  };
+
+  function scopeLabel(scope){
+    if (scope === "all") return "すべて";
+    if (scope.startsWith("region:")) return scope.slice(7);
+    if (scope.startsWith("genre:"))  return scope.slice(6);
+    return scope;
   }
 
-  function buildQuizQuestions() {
-    const pool = FIGURES.filter((f) => f.achievement);
-    const chosen = shuffle(pool).slice(0, Math.min(QUIZ_LENGTH, pool.length));
-    return chosen.map((fig) => {
-      const distractors = shuffle(pool.filter((f) => f.id !== fig.id)).slice(0, 3);
-      const options = shuffle([fig, ...distractors]);
-      return { fig, options };
+  function quizPool(scope){
+    return FIGURES.filter((f) => f.achievement && matchesScope(f, scope));
+  }
+
+  function renderQuizSetup(){
+    stopTimer();
+    quizState = null;
+    const pool = quizPool(quizSettings.scope);
+    const maxCount = pool.length;
+    if (quizSettings.count !== "all" && quizSettings.count > maxCount){
+      quizSettings.count = maxCount;
+    }
+
+    const opt = (group, value, text, current) =>
+      `<button class="setup-opt${String(current) === String(value) ? " active" : ""}" data-group="${group}" data-value="${escapeHtml(String(value))}">${escapeHtml(text)}</button>`;
+
+    const scopeOpts = [
+      opt("scope", "all", "すべて", quizSettings.scope),
+      ...regions.map((r) => opt("scope", "region:" + r, r, quizSettings.scope)),
+      ...genres.map((g) => opt("scope", "genre:" + g, g, quizSettings.scope)),
+    ].join("");
+
+    const countOpts = [5, 8, 10, 15].filter((n) => n <= maxCount)
+      .map((n) => opt("count", n, n + "問", quizSettings.count)).join("")
+      + opt("count", "all", `全${maxCount}問`, quizSettings.count);
+
+    const timeOpts = [
+      opt("timeLimit", 0, "なし", quizSettings.timeLimit),
+      opt("timeLimit", 5, "5秒", quizSettings.timeLimit),
+      opt("timeLimit", 10, "10秒", quizSettings.timeLimit),
+      opt("timeLimit", 15, "15秒", quizSettings.timeLimit),
+      opt("timeLimit", 20, "20秒", quizSettings.timeLimit),
+    ].join("");
+
+    resultEl.innerHTML = `
+      <div class="quiz-card">
+        <div class="quiz-question-label">クイズの設定</div>
+
+        <div class="setup-group">
+          <div class="setup-label">出題形式</div>
+          <div class="setup-opts">
+            ${opt("format", "achievement", "実績→人物名", quizSettings.format)}
+            ${opt("format", "name", "人物名→実績", quizSettings.format)}
+            ${opt("format", "mix", "ミックス", quizSettings.format)}
+          </div>
+        </div>
+
+        <div class="setup-group">
+          <div class="setup-label">出題範囲</div>
+          <div class="setup-opts">${scopeOpts}</div>
+          <p class="setup-note">この範囲に${maxCount}人が該当します。選択肢のダミーは範囲外からも選ばれることがあります。</p>
+        </div>
+
+        <div class="setup-group">
+          <div class="setup-label">問題数</div>
+          <div class="setup-opts">${countOpts}</div>
+        </div>
+
+        <div class="setup-group">
+          <div class="setup-label">1問あたりの制限時間</div>
+          <div class="setup-opts">${timeOpts}</div>
+          <p class="setup-note">時間切れになった問題は不正解として扱われます。</p>
+        </div>
+
+        <div class="quiz-actions">
+          <button class="primary" id="quizGoBtn">この設定で始める</button>
+          <button id="quizCancelBtn">やめる</button>
+        </div>
+        ${renderQuizHistorySection(loadQuizHistory())}
+      </div>
+    `;
+
+    resultEl.querySelectorAll(".setup-opt").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const g = btn.dataset.group;
+        let v = btn.dataset.value;
+        if (g === "count") v = (v === "all") ? "all" : Number(v);
+        else if (g === "timeLimit") v = Number(v);
+        quizSettings[g] = v;
+        renderQuizSetup();
+      });
+    });
+    document.getElementById("quizGoBtn").addEventListener("click", () => startQuiz());
+    document.getElementById("quizCancelBtn").addEventListener("click", () => {
+      quizState = null;
+      renderIntro();
     });
   }
 
-  function startQuiz() {
+  // 1問分を組み立てる。mode: "achievement"（実績を見て人物名を当てる）/ "name"（人物名を見て実績を当てる）
+  function buildQuestion(fig, mode, scopePool){
+    const sameScope = scopePool.filter((f) => f.id !== fig.id);
+    const fallback  = FIGURES.filter((f) => f.achievement && f.id !== fig.id);
+    let distractors = shuffle(sameScope).slice(0, 3);
+    if (distractors.length < 3){
+      const have = new Set(distractors.map((d) => d.id));
+      const extra = shuffle(fallback.filter((f) => !have.has(f.id))).slice(0, 3 - distractors.length);
+      distractors = distractors.concat(extra);
+    }
+    return { fig, mode, options: shuffle([fig, ...distractors]) };
+  }
+
+  function buildQuizQuestions(){
+    const pool = quizPool(quizSettings.scope);
+    const n = quizSettings.count === "all" ? pool.length : Math.min(quizSettings.count, pool.length);
+    const chosen = shuffle(pool).slice(0, n);
+    return chosen.map((fig) => {
+      const mode = quizSettings.format === "mix"
+        ? (Math.random() < 0.5 ? "achievement" : "name")
+        : quizSettings.format;
+      return buildQuestion(fig, mode, pool);
+    });
+  }
+
+  function startQuiz(questions, note){
+    const qs = questions || buildQuizQuestions();
+    if (qs.length === 0){
+      resultEl.innerHTML = `<p class="error">この範囲には出題できる人物がいませんでした。範囲を変えてお試しください。</p>`;
+      return;
+    }
     quizState = {
-      questions: buildQuizQuestions(),
+      questions: qs,
       index: 0,
       correctCount: 0,
       answered: false,
+      wrongFigIds: [],
+      note: note || `${FORMAT_LABEL[quizSettings.format]}・${scopeLabel(quizSettings.scope)}`,
     };
     chipRow.hidden = true;
     filterRow.hidden = true;
@@ -459,49 +752,88 @@
     renderQuizQuestion();
   }
 
-  function renderQuizQuestion() {
+  /* --- 制限時間 --- */
+  let timerId = null;
+  function stopTimer(){
+    if (timerId !== null){ clearInterval(timerId); timerId = null; }
+  }
+  function startTimer(seconds){
+    stopTimer();
+    const bar = document.getElementById("timerBar");
+    if (!bar) return;
+    const totalMs = seconds * 1000;
+    const startAt = Date.now();
+    timerId = setInterval(() => {
+      const elapsed = Date.now() - startAt;
+      const ratio = Math.max(0, 1 - elapsed / totalMs);
+      bar.style.width = (ratio * 100) + "%";
+      bar.classList.toggle("urgent", ratio <= 0.3);
+      if (elapsed >= totalMs){
+        stopTimer();
+        handleQuizAnswer(null, true);
+      }
+    }, 100);
+  }
+
+  function renderQuizQuestion(){
+    stopTimer();
     const { questions, index, correctCount } = quizState;
     const q = questions[index];
     quizState.answered = false;
+
+    const isAchievementMode = q.mode === "achievement";
+    const questionText = isAchievementMode ? q.fig.achievement : q.fig.name;
+    const questionLabel = isAchievementMode
+      ? "この教科書の実績はだれのもの？"
+      : "この人物の、教科書での実績は？";
+    const optionText = (o) => isAchievementMode ? o.name : o.achievement;
+
+    const timerHtml = quizSettings.timeLimit > 0
+      ? `<div class="timer-wrap"><div class="timer-bar" id="timerBar"></div></div>` : "";
+
     resultEl.innerHTML = `
       <div class="quiz-card">
-        <div class="quiz-progress">問題 ${index + 1} / ${questions.length}　|　正解 ${correctCount}</div>
-        <div class="quiz-question-label">この教科書の実績はだれのもの？</div>
-        <p class="quiz-question">${escapeHtml(q.fig.achievement)}</p>
-        <div class="quiz-options" id="quizOptions">
-          ${q.options
-            .map(
-              (opt, i) =>
-                `<button class="quiz-option" data-id="${opt.id}" data-index="${i}">${escapeHtml(opt.name)}</button>`
-            )
-            .join("")}
+        <div class="quiz-progress">問題 ${index + 1} / ${questions.length}　|　正解 ${correctCount}　|　${escapeHtml(quizState.note)}</div>
+        ${timerHtml}
+        <div class="quiz-question-label">${questionLabel}</div>
+        <p class="quiz-question">${escapeHtml(questionText)}</p>
+        <div class="quiz-options${isAchievementMode ? "" : " wide"}">
+          ${q.options.map((o) => `<button class="quiz-option" data-id="${escapeHtml(o.id)}">${escapeHtml(optionText(o))}</button>`).join("")}
         </div>
         <div id="quizFeedback"></div>
       </div>
     `;
-    document.querySelectorAll(".quiz-option").forEach((btn) => {
-      btn.addEventListener("click", () => handleQuizAnswer(btn.dataset.id));
+    resultEl.querySelectorAll(".quiz-option").forEach((btn) => {
+      btn.addEventListener("click", () => handleQuizAnswer(btn.dataset.id, false));
     });
+    if (quizSettings.timeLimit > 0) startTimer(quizSettings.timeLimit);
   }
 
-  function handleQuizAnswer(selectedId) {
-    if (quizState.answered) return;
+  function handleQuizAnswer(selectedId, timedOut){
+    if (!quizState || quizState.answered) return;
     quizState.answered = true;
+    stopTimer();
+
     const { questions, index } = quizState;
     const q = questions[index];
-    const isCorrect = selectedId === q.fig.id;
+    const isCorrect = !timedOut && selectedId === q.fig.id;
     if (isCorrect) quizState.correctCount++;
+    else quizState.wrongFigIds.push(q.fig.id);
 
-    document.querySelectorAll(".quiz-option").forEach((btn) => {
+    resultEl.querySelectorAll(".quiz-option").forEach((btn) => {
       btn.disabled = true;
       if (btn.dataset.id === q.fig.id) btn.classList.add("correct");
-      else if (btn.dataset.id === selectedId) btn.classList.add("wrong");
+      else if (!timedOut && btn.dataset.id === selectedId) btn.classList.add("wrong");
     });
 
     const isLast = index === questions.length - 1;
+    const headline = timedOut
+      ? `<span class="quiz-timeout">時間切れ。</span>正解は「${escapeHtml(q.fig.name)}」でした。`
+      : `${isCorrect ? "正解！" : "不正解。"}正解は「${escapeHtml(q.fig.name)}」（${escapeHtml(q.fig.achievement)}）でした。`;
+
     document.getElementById("quizFeedback").innerHTML = `
       <div class="quiz-feedback">
-        <p>${isCorrect ? "正解！" : "不正解。"}正解は「${escapeHtml(q.fig.name)}」でした。</p>
+        <p>${headline}</p>
         <p><strong>もう一つの顔：</strong>${escapeHtml(q.fig.hidden_face)}</p>
         <div class="quiz-actions">
           <button class="primary" id="quizNextBtn">${isLast ? "結果を見る" : "次の問題へ"}</button>
@@ -509,98 +841,246 @@
       </div>
     `;
     document.getElementById("quizNextBtn").addEventListener("click", () => {
-      if (isLast) {
+      if (isLast){
         renderQuizResult();
-      } else {
+      }else{
         quizState.index++;
         renderQuizQuestion();
       }
     });
   }
 
-  // ---- クイズ履歴（このブラウザ内にのみ保存） ----
-  const QUIZ_HISTORY_KEY = "purutaru_quiz_history";
-  const QUIZ_HISTORY_MAX = 20;
+  function renderQuizResult(){
+    stopTimer();
+    const { questions, correctCount, wrongFigIds, note } = quizState;
+    const history = saveQuizResult(correctCount, questions.length, note);
+    const rate = Math.round((correctCount / questions.length) * 100);
+    const wrongUnique = [...new Set(wrongFigIds)];
 
-  function loadQuizHistory() {
-    try {
-      const raw = localStorage.getItem(QUIZ_HISTORY_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      return [];
-    }
-  }
+    const wrongBtn = wrongUnique.length > 0
+      ? `<button class="primary" id="quizRetryWrongBtn">間違えた${wrongUnique.length}問をもう一度</button>` : "";
+    const wrongList = wrongUnique.length > 0
+      ? `<p class="setup-note">間違えた人物：${wrongUnique.map((id) => escapeHtml(nameOf(id))).join("、")}</p>` : "";
 
-  function saveQuizResult(correctCount, total) {
-    try {
-      const history = loadQuizHistory();
-      history.unshift({
-        date: new Date().toISOString(),
-        correct: correctCount,
-        total: total,
-      });
-      const trimmed = history.slice(0, QUIZ_HISTORY_MAX);
-      localStorage.setItem(QUIZ_HISTORY_KEY, JSON.stringify(trimmed));
-      return trimmed;
-    } catch (e) {
-      // localStorageが使えない環境では保存しない（履歴は記憶されないだけ）
-      return loadQuizHistory();
-    }
-  }
-
-  function formatQuizDate(isoStr) {
-    const d = new Date(isoStr);
-    if (isNaN(d.getTime())) return "";
-    const mm = d.getMonth() + 1;
-    const dd = d.getDate();
-    const hh = String(d.getHours()).padStart(2, "0");
-    const mi = String(d.getMinutes()).padStart(2, "0");
-    return `${mm}/${dd} ${hh}:${mi}`;
-  }
-
-  function renderQuizHistorySection(history) {
-    if (history.length === 0) return "";
-    const totalCorrect = history.reduce((sum, h) => sum + h.correct, 0);
-    const totalQuestions = history.reduce((sum, h) => sum + h.total, 0);
-    const overallRate = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
-    const rows = history
-      .map((h) => {
-        const rate = h.total > 0 ? Math.round((h.correct / h.total) * 100) : 0;
-        return `<li><span class="qh-date">${escapeHtml(formatQuizDate(h.date))}</span><span class="qh-score">${h.correct} / ${h.total} 問（${rate}%）</span></li>`;
-      })
-      .join("");
-    return `
-      <div class="quiz-history">
-        <div class="quiz-history-summary">これまで ${history.length} 回挑戦　|　通算正答率 ${overallRate}%（${totalCorrect} / ${totalQuestions} 問）</div>
-        <ul class="quiz-history-list">${rows}</ul>
-      </div>
-    `;
-  }
-
-  function renderQuizResult() {
-    const { questions, correctCount } = quizState;
-    const history = saveQuizResult(correctCount, questions.length);
     resultEl.innerHTML = `
       <div class="quiz-card quiz-result">
         <div class="quiz-question-label">クイズ結果</div>
         <div class="score">${correctCount} / ${questions.length} 問正解</div>
+        <div class="score-sub">正答率 ${rate}%　|　${escapeHtml(note)}</div>
+        ${wrongList}
         <div class="quiz-actions" style="justify-content:center;">
-          <button class="primary" id="quizRetryBtn">もう一度挑戦する</button>
+          ${wrongBtn}
+          <button id="quizAgainBtn">同じ設定でもう一度</button>
+          <button id="quizSetupBtn">設定を変える</button>
           <button id="quizExitBtn">検索に戻る</button>
         </div>
         ${renderQuizHistorySection(history)}
       </div>
     `;
-    document.getElementById("quizRetryBtn").addEventListener("click", startQuiz);
+
+    if (wrongUnique.length > 0){
+      document.getElementById("quizRetryWrongBtn").addEventListener("click", () => {
+        const pool = quizPool(quizSettings.scope);
+        const qs = shuffle(wrongUnique).map((id) => {
+          const fig = findById(id);
+          const mode = quizSettings.format === "mix"
+            ? (Math.random() < 0.5 ? "achievement" : "name")
+            : quizSettings.format;
+          return buildQuestion(fig, mode, pool.length >= 4 ? pool : FIGURES.filter((f) => f.achievement));
+        });
+        startQuiz(qs, "復習（間違えた問題）");
+      });
+    }
+    document.getElementById("quizAgainBtn").addEventListener("click", () => startQuiz());
+    document.getElementById("quizSetupBtn").addEventListener("click", renderQuizSetup);
     document.getElementById("quizExitBtn").addEventListener("click", () => {
       quizState = null;
       renderIntro();
     });
   }
 
-  quizStartBtn.addEventListener("click", startQuiz);
+  quizStartBtn.addEventListener("click", renderQuizSetup);
 
-  // 初期表示（プルタルの説明）
+  /* =========================================================
+     相関図（力学モデルによる自動レイアウト）
+     ========================================================= */
+  const GRAPH_W = 900, GRAPH_H = 640;
+  let graphLayout = null;
+
+  // 図の上では長い名前を短く表示する（正式名はマウスオーバーで出る）
+  const GRAPH_SHORT_NAME = { marcus_aurelius: "マルクス=アウレリウス" };
+  function graphLabel(fig){ return GRAPH_SHORT_NAME[fig.id] || fig.name; }
+
+  function computeGraphLayout(){
+    const ids = FIGURES.map((f) => f.id);
+    const idx = new Map(ids.map((id, i) => [id, i]));
+    const n = ids.length;
+    const pos = [];
+    // 初期配置：地域ごとに左右に分けた円周上（毎回同じ結果になるよう乱数を使わない）
+    ids.forEach((id, i) => {
+      const fig = findById(id);
+      const side = fig.category === "ローマ" ? 1 : -1;
+      const angle = (i / n) * Math.PI * 2;
+      pos.push({
+        x: GRAPH_W / 2 + side * 150 + Math.cos(angle) * 220,
+        y: GRAPH_H / 2 + Math.sin(angle) * 220,
+        vx: 0, vy: 0,
+      });
+    });
+
+    const edges = RELATIONS
+      .map((r) => ({ a: idx.get(r.from), b: idx.get(r.to) }))
+      .filter((e) => e.a !== undefined && e.b !== undefined);
+
+    const degree = new Array(n).fill(0);
+    edges.forEach((e) => { degree[e.a]++; degree[e.b]++; });
+
+    // 反発 + ばね + 中心引力 を繰り返して落ち着かせる
+    for (let iter = 0; iter < 420; iter++){
+      const cool = 1 - iter / 420;
+      for (let i = 0; i < n; i++){
+        for (let j = i + 1; j < n; j++){
+          let dx = pos[i].x - pos[j].x, dy = pos[i].y - pos[j].y;
+          let d2 = dx * dx + dy * dy;
+          if (d2 < 1) { d2 = 1; dx = (i - j) || 1; dy = 1; }
+          const d = Math.sqrt(d2);
+          const rep = 11000 / d2;
+          const fx = (dx / d) * rep, fy = (dy / d) * rep;
+          pos[i].vx += fx; pos[i].vy += fy;
+          pos[j].vx -= fx; pos[j].vy -= fy;
+        }
+      }
+      edges.forEach((e) => {
+        const p = pos[e.a], q = pos[e.b];
+        const dx = q.x - p.x, dy = q.y - p.y;
+        const d = Math.sqrt(dx * dx + dy * dy) || 1;
+        const k = (d - 150) * 0.05;
+        const fx = (dx / d) * k, fy = (dy / d) * k;
+        p.vx += fx; p.vy += fy;
+        q.vx -= fx; q.vy -= fy;
+      });
+      for (let i = 0; i < n; i++){
+        pos[i].vx += (GRAPH_W / 2 - pos[i].x) * 0.004;
+        pos[i].vy += (GRAPH_H / 2 - pos[i].y) * 0.007;
+        pos[i].x += Math.max(-14, Math.min(14, pos[i].vx * cool));
+        pos[i].y += Math.max(-14, Math.min(14, pos[i].vy * cool));
+        pos[i].vx *= 0.82; pos[i].vy *= 0.82;
+        pos[i].x = Math.max(46, Math.min(GRAPH_W - 46, pos[i].x));
+        pos[i].y = Math.max(26, Math.min(GRAPH_H - 22, pos[i].y));
+      }
+    }
+    return { ids, idx, pos, edges, degree };
+  }
+
+  function renderGraph(selectedId){
+    stopTimer();
+    quizState = null;
+    if (!graphLayout) graphLayout = computeGraphLayout();
+    const { ids, idx, pos, degree } = graphLayout;
+
+    const neighbors = new Set();
+    if (selectedId){
+      (relByFigure.get(selectedId) || []).forEach((e) => neighbors.add(e.other));
+      neighbors.add(selectedId);
+    }
+
+    const edgeSvg = RELATIONS.map((r) => {
+      const a = pos[idx.get(r.from)], b = pos[idx.get(r.to)];
+      if (!a || !b) return "";
+      let cls = "gedge";
+      if (selectedId){
+        cls += (r.from === selectedId || r.to === selectedId) ? " hot" : " dim";
+      }
+      return `<line class="${cls}" x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}" />`;
+    }).join("");
+
+    const nodeSvg = ids.map((id, i) => {
+      const fig = findById(id);
+      const p = pos[i];
+      const r = 4.5 + Math.min(degree[i], 14) * 0.55;
+      const color = fig.category === "ローマ" ? "#a06a26" : "#3c6a5f";
+      let cls = "gnode";
+      if (selectedId){
+        if (id === selectedId) cls += " sel";
+        else if (!neighbors.has(id)) cls += " dim";
+      }
+      return `<g class="${cls}" data-node="${escapeHtml(id)}">
+        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r.toFixed(1)}" fill="${color}"><title>${escapeHtml(fig.name)}（つながり ${degree[i]}件）</title></circle>
+        <text x="${p.x.toFixed(1)}" y="${(p.y - r - 3).toFixed(1)}">${escapeHtml(graphLabel(fig))}</text>
+      </g>`;
+    }).join("");
+
+    let detail = `<p class="setup-note">人物を選ぶと、その人のつながりだけを強調して表示します。</p>`;
+    if (selectedId){
+      const fig = findById(selectedId);
+      detail = `
+        <div class="graph-detail">
+          <div class="quiz-question-label">${escapeHtml(fig.name)} のつながり</div>
+          ${renderRelationsCard(selectedId) || "<p class=\"setup-note\">つながりが登録されていません。</p>"}
+          <div class="quiz-actions">
+            <button class="primary" data-goto="${escapeHtml(selectedId)}">${escapeHtml(fig.name)}の詳細を見る</button>
+            <button id="graphClearBtn">選択を解除</button>
+          </div>
+        </div>
+      `;
+    }
+
+    resultEl.innerHTML = `
+      <div class="graph-card">
+        <div class="quiz-question-label">人物相関図</div>
+        <p class="graph-hint">42人・${RELATIONS.length}件のつながりを表示しています。点の大きさは、つながりの多さを表します。</p>
+        <div class="graph-scroll">
+          <svg class="graph-svg" viewBox="0 0 ${GRAPH_W} ${GRAPH_H}" role="img" aria-label="古代ギリシャ・ローマの人物相関図">
+            <g>${edgeSvg}</g>
+            <g>${nodeSvg}</g>
+          </svg>
+        </div>
+        <div class="graph-legend">
+          <span><span class="legend-dot" style="background:#3c6a5f;"></span>ギリシャ</span>
+          <span><span class="legend-dot" style="background:#a06a26;"></span>ローマ</span>
+        </div>
+        ${detail}
+        <div class="quiz-actions">
+          <button id="graphExitBtn">検索に戻る</button>
+        </div>
+      </div>
+    `;
+
+    resultEl.querySelectorAll("[data-node]").forEach((g) => {
+      g.addEventListener("click", () => renderGraph(g.dataset.node));
+    });
+    const clearBtn = document.getElementById("graphClearBtn");
+    if (clearBtn) clearBtn.addEventListener("click", () => renderGraph(null));
+    document.getElementById("graphExitBtn").addEventListener("click", () => renderIntro());
+    bindRelationLinks();
+  }
+
+  graphBtn.addEventListener("click", () => renderGraph(null));
+
+  /* =========================================================
+     はじめの画面
+     ========================================================= */
+  function renderIntro(){
+    stopTimer();
+    quizState = null;
+    const history = loadQuizHistory();
+    let historyHtml = "";
+    if (history.length > 0){
+      const c = history.reduce((s, h) => s + h.correct, 0);
+      const t = history.reduce((s, h) => s + h.total, 0);
+      const rate = t > 0 ? Math.round((c / t) * 100) : 0;
+      historyHtml = `<div class="intro-history">クイズ通算：${history.length} 回挑戦・正答率 ${rate}%（このブラウザに保存された記録）</div>`;
+    }
+    resultEl.innerHTML = `
+      <div class="intro">
+        <h2>プルタルとは</h2>
+        <p>プルタルは、世界史の授業や教科書には載っていない、人物の「もう一つの顔」を検索できるアプリです。教科書の一行の説明だけでは印象に残りにくい人物も、意外なエピソードを知ることで記憶に残りやすくなります。</p>
+        <p>上の検索欄に人物名を入力するか、「収録人物の一覧を表示」から人物を選んでみてください。「クイズに挑戦する」では出題形式・範囲・制限時間を選んで力試しができ、「相関図を見る」では人物同士のつながりをたどれます。</p>
+        ${historyHtml}
+      </div>
+    `;
+  }
+
   renderIntro();
 })();
 </script>
