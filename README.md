@@ -10,7 +10,7 @@
 
 ### 目的・背景
 
-世界史の教科書には、古代ギリシャ・ローマの人物が「名前と一行の実績」だけで
+世界史の教科書には登場する人物が「名前と一行の実績」だけで
 紹介されているだけの箇所が多くあります（例：タレス＝「イオニア学派の祖」）。
 この一行だけでは人物像が記号的になり、暗記はできても記憶に残りにくい、
 勉強としても面白みに欠けるという課題があります。
@@ -48,7 +48,7 @@
   といった関係を、教科書の一行紹介だけでは見えにくい人物どうしのつながりとして
   俯瞰できる）。
 
-### 独創性のポイント
+### 工夫したポイント
 
 - 教科書の記述を否定・置き換えるのではなく、教科書の記述を起点に
   「もう一つの顔」を足すことで、暗記量を増やさずに興味と定着を高める設計。
@@ -92,31 +92,8 @@ purutaru-pages/
 
 ## 4. 作品のURL
 
-`https://あなたのユーザー名.github.io/Purutaru/`
+https://senly-droid.github.io/Purutaru/
 
-## GitHub Pagesでの公開手順（開発メモ）
-
-1. GitHubで新しいリポジトリを作成する（例: `Purutaru`）
-2. このフォルダの中身（`index.html`、`data/`、`README.md`）をリポジトリのルートに追加してpush
-
-   ```bash
-   cd purutaru-pages
-   git init
-   git add .
-   git commit -m "プルタル: クイズ機能拡張・相関図を追加"
-   git branch -M main
-   git remote add origin https://github.com/あなたのユーザー名/Purutaru.git
-   git push -u origin main
-   ```
-
-   ※ GitHubのWeb UIから「Add file」→「Upload files」で
-   `index.html`・`README.md`・`data/figures.js`・`data/relations.js`
-   をアップロードする方法でも公開できます（`data/`の階層が保たれているか要確認）。
-
-3. GitHubのリポジトリ画面で「Settings」→「Pages」を開く
-4. 「Build and deployment」の「Source」で `Deploy from a branch` を選択
-5. 「Branch」で `main` ブランチ、フォルダは `/ (root)` を選んで保存
-6. 数分待つと `https://あなたのユーザー名.github.io/Purutaru/` で公開されます
 
 ## 人物データの追加方法
 
@@ -150,7 +127,7 @@ purutaru-pages/
 }
 ```
 
-## 5. 今後の予定（選考通過後）
+## 5. 今後の予定
 
 固定フォーマット応答から、AI連携による対話的な深掘り機能・未収録人物のその場生成
 への拡張を予定しています。その際はAPIキーをブラウザに露出させないため、
