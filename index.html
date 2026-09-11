@@ -10,14 +10,34 @@
   :root{
     --ink:#1c1710; --ground:#f2ecdd; --surface:#fbf7ee; --surface-2:#e9dfc7;
     --bronze:#a06a26; --patina:#3c6a5f; --line:rgba(28,23,16,0.15); --muted:#6a5e49;
-    --wrong:#a3382f;
+    --wrong:#a3382f; --on-accent:#fff8ec; --focus:#1b5fa8;
   }
+  /* 高コントラスト表示（アクセシビリティ設定でON） */
+  body.hc{
+    --ink:#ffffff; --ground:#000000; --surface:#101010; --surface-2:#262626;
+    --bronze:#ffc860; --patina:#65e8c8; --line:rgba(255,255,255,0.5); --muted:#e8e8e8;
+    --wrong:#ff9a90; --on-accent:#000000; --focus:#ffe066;
+  }
+  /* 文字サイズ（アクセシビリティ設定でON） */
+  html.fs-l{font-size:112.5%;}
+  html.fs-xl{font-size:131%;}
+
   *{box-sizing:border-box;}
   body{margin:0; background:var(--ground); color:var(--ink); font-family:"Hiragino Sans","Yu Gothic",system-ui,sans-serif; line-height:1.7;}
   header{padding:2rem 1.5rem 0.8rem; text-align:center;}
   h1{font-size:1.8rem; margin:0;}
   p.tagline{color:var(--muted); margin-top:0.5rem;}
   main{max-width:840px; margin:0 auto; padding:1.5rem;}
+  :focus-visible{outline:3px solid var(--focus); outline-offset:2px;}
+  .skip-link{
+    position:absolute; left:-9999px; top:0; background:var(--surface); color:var(--ink);
+    padding:0.6rem 1rem; border:1px solid var(--line); border-radius:0 0 6px 0; z-index:10;
+  }
+  .skip-link:focus{left:0;}
+  .visually-hidden{
+    position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+  }
 
   /* --- 検索まわり --- */
   .search-row{display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:1.2rem; align-items:center;}
@@ -27,7 +47,7 @@
   }
   input[type="text"]{flex:1; min-width:180px;}
   button{cursor:pointer;}
-  button.primary{background:var(--bronze); color:#fff8ec; border-color:var(--bronze); font-weight:600;}
+  button.primary{background:var(--bronze); color:var(--on-accent); border-color:var(--bronze); font-weight:600;}
   .toggle{display:flex; align-items:center; gap:0.5rem; margin-left:auto; font-size:0.85rem; color:var(--muted);}
   .suggest-list{list-style:none; margin:0; padding:0; position:relative;}
   .suggest-list li{
@@ -52,7 +72,7 @@
     font-size:0.78rem; padding:0.3rem 0.75rem; border-radius:99px; border:1px solid var(--line);
     background:transparent; color:var(--muted); cursor:pointer; font-family:inherit;
   }
-  .filter-chip.active{background:var(--patina); border-color:var(--patina); color:#fff8ec;}
+  .filter-chip.active{background:var(--patina); border-color:var(--patina); color:var(--on-accent);}
   .filter-chip.fav-filter{margin-left:auto;}
   .chip-row{display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.2rem;}
   .chip-row[hidden]{display:none;}
@@ -60,7 +80,7 @@
     font-size:0.85rem; padding:0.4rem 0.9rem; border-radius:99px; border:1px solid var(--line);
     background:var(--surface); cursor:pointer; font-family:inherit;
   }
-  .chip.active{background:var(--bronze); border-color:var(--bronze); color:#fff8ec;}
+  .chip.active{background:var(--bronze); border-color:var(--bronze); color:var(--on-accent);}
   .chip[hidden]{display:none;}
 
   /* --- 人物カード --- */
@@ -68,13 +88,19 @@
   .card h2{font-size:0.8rem; letter-spacing:0.05em; margin:0 0 0.6rem; color:var(--muted);}
   .card.hidden h2{color:var(--patina);}
   .card p{margin:0; font-size:0.95rem;}
-  .card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;}
+  .card-head{display:flex; align-items:center; justify-content:space-between; gap:0.4rem; margin-bottom:0.6rem;}
   .card-head h2{margin:0;}
+  .card-tools{display:flex; align-items:center; gap:0.2rem;}
   .fav-star{
     background:transparent; border:none; cursor:pointer; font-size:1.3rem; line-height:1;
     padding:0.1rem 0.3rem; color:var(--muted); vertical-align:middle;
   }
   .fav-star.active{color:var(--bronze);}
+  .speak-btn{
+    background:transparent; border:1px solid var(--line); border-radius:99px;
+    font-size:0.75rem; padding:0.25rem 0.7rem; color:var(--muted); cursor:pointer; font-family:inherit;
+  }
+  .speak-btn:hover{background:var(--surface-2);}
   .achievement{
     font-size:0.88rem; color:var(--muted); background:var(--surface-2);
     border-radius:8px; padding:0.7rem 1rem; margin-bottom:0.8rem;
@@ -95,6 +121,28 @@
     display:inline-block; font-size:0.7rem; background:var(--surface-2); color:var(--muted);
     padding:0.15rem 0.6rem; border-radius:99px; margin-bottom:0.8rem;
   }
+
+  /* --- もしこの人物がいなかったら --- */
+  .inf-card{
+    background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--patina);
+    border-radius:8px; padding:1.2rem 1.3rem; margin-top:1rem;
+  }
+  .inf-card h2{font-size:0.8rem; letter-spacing:0.05em; margin:0 0 0.2rem; color:var(--patina);}
+  .inf-tier{font-size:0.75rem; color:var(--muted); margin-bottom:0.9rem;}
+  .inf-stats{display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:0.9rem;}
+  .inf-stat{
+    background:var(--surface-2); border-radius:8px; padding:0.5rem 0.9rem; min-width:8.5rem; flex:1 1 auto;
+  }
+  .inf-stat-label{display:block; font-size:0.68rem; color:var(--muted); letter-spacing:0.04em;}
+  .inf-stat-value{font-size:1.15rem; font-weight:700; color:var(--ink);}
+  .inf-stat-unit{font-size:0.78rem; font-weight:400; color:var(--muted); margin-left:0.15rem;}
+  .inf-body p{margin:0 0 0.7rem; font-size:0.93rem;}
+  .inf-body p:last-child{margin-bottom:0;}
+  .inf-chain{
+    display:block; background:var(--surface-2); border-radius:6px; padding:0.5rem 0.8rem;
+    font-size:0.86rem; margin:0.2rem 0 0.7rem; word-break:break-word;
+  }
+  .inf-note{font-size:0.76rem; color:var(--muted); margin-top:0.9rem; padding-top:0.7rem; border-top:1px dashed var(--line);}
 
   /* --- つながり（相関） --- */
   .rel-card{
@@ -117,20 +165,60 @@
   .rel-dir{font-size:0.75rem; color:var(--muted);}
   .rel-label{margin:0; font-size:0.88rem; color:var(--ink);}
 
+  /* --- 関係の図式（線をクリックしたとき） --- */
+  .rd-wrap{background:var(--surface-2); border-radius:8px; padding:1.1rem 1rem 0.9rem; margin:0.6rem 0 0.9rem;}
+  .rel-diagram{display:flex; align-items:center; gap:0.6rem;}
+  .rd-node{
+    font-size:1rem; font-weight:700; text-align:center; max-width:34%; word-break:break-word; line-height:1.4;
+  }
+  .rd-arrow{flex:1 1 auto; min-width:72px;}
+  .rd-line{
+    position:relative; height:0; border-top:3px solid var(--ink);
+    margin:0 18px 0 4px;
+  }
+  .rd-line::after{
+    content:""; position:absolute; right:-18px; top:-9px;
+    border-left:18px solid var(--ink); border-top:9px solid transparent; border-bottom:9px solid transparent;
+  }
+  .rd-line.both{margin-left:18px;}
+  .rd-line.both::before{
+    content:""; position:absolute; left:-18px; top:-9px;
+    border-right:18px solid var(--ink); border-top:9px solid transparent; border-bottom:9px solid transparent;
+  }
+  .rd-verb{display:block; text-align:center; font-size:0.9rem; margin-top:0.55rem; color:var(--ink);}
+  .rd-caption{font-size:0.86rem; margin:0.9rem 0 0; color:var(--ink);}
+  .rd-type{
+    display:inline-block; font-size:0.7rem; padding:0.1rem 0.55rem; border-radius:99px;
+    background:var(--surface); color:var(--muted); margin-bottom:0.5rem;
+  }
+
   /* --- 相関図 --- */
   .graph-card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
-  .graph-scroll{overflow-x:auto; margin:0 -0.4rem;}
-  .graph-svg{display:block; width:100%; min-width:640px; height:auto; touch-action:pan-y;}
+  .graph-stage{position:relative; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--ground);}
+  .graph-svg{display:block; width:100%; height:auto; touch-action:none; cursor:grab;}
+  .graph-svg.grabbing{cursor:grabbing;}
+  .graph-tools{position:absolute; right:0.5rem; top:0.5rem; display:flex; flex-direction:column; gap:0.3rem;}
+  .gzoom-btn{
+    width:2.1rem; height:2.1rem; border-radius:6px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink); font-size:1rem; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; padding:0; font-family:inherit;
+  }
+  .gzoom-btn.reset{font-size:0.66rem;}
   .gnode circle{stroke:var(--surface); stroke-width:1.5; cursor:pointer;}
+  .gnode.greek circle{fill:var(--patina);}
+  .gnode.roman circle{fill:var(--bronze);}
   .gnode text{font-size:9px; fill:var(--ink); pointer-events:none; text-anchor:middle;}
-  .gnode.dim{opacity:0.18;}
-  .gnode.sel circle{stroke:var(--ink); stroke-width:2;}
+  .gnode.dim{opacity:0.15;}
+  .gnode.sel circle{stroke:var(--ink); stroke-width:2.5;}
   .gnode.sel text{font-weight:700; font-size:11px;}
-  .gedge{stroke:var(--muted); stroke-opacity:0.28; fill:none;}
-  .gedge.dim{stroke-opacity:0.05;}
-  .gedge.hot{stroke:var(--bronze); stroke-opacity:0.85; stroke-width:2;}
+  .gedge{stroke:var(--muted); stroke-opacity:0.3; stroke-width:1.2; fill:none; pointer-events:none;}
+  .gedge-hit{stroke:transparent; stroke-width:12; fill:none; cursor:pointer;}
+  .gedge-g.dim .gedge{stroke-opacity:0.05;}
+  .gedge-g.hot .gedge{stroke:var(--bronze); stroke-opacity:0.95; stroke-width:3;}
   .graph-legend{display:flex; gap:1rem; flex-wrap:wrap; font-size:0.78rem; color:var(--muted); margin-top:0.6rem;}
   .legend-dot{display:inline-block; width:0.7rem; height:0.7rem; border-radius:50%; margin-right:0.3rem; vertical-align:-1px;}
+  .legend-dot.greek{background:var(--patina);}
+  .legend-dot.roman{background:var(--bronze);}
   .graph-hint{font-size:0.82rem; color:var(--muted); margin:0 0 0.8rem;}
   .graph-detail{margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--line);}
 
@@ -147,8 +235,8 @@
     background:var(--ground); cursor:pointer; font-size:0.92rem; font-family:inherit; color:var(--ink);
   }
   .quiz-option:hover:not(:disabled){background:var(--surface-2);}
-  .quiz-option.correct{background:var(--patina); border-color:var(--patina); color:#fff8ec;}
-  .quiz-option.wrong{background:var(--wrong); border-color:var(--wrong); color:#fff8ec;}
+  .quiz-option.correct{background:var(--patina); border-color:var(--patina); color:var(--on-accent); font-weight:600;}
+  .quiz-option.wrong{background:var(--wrong); border-color:var(--wrong); color:var(--on-accent); font-weight:600;}
   .quiz-option:disabled{cursor:default;}
   .quiz-feedback{margin-top:1rem; padding-top:1rem; border-top:1px dashed var(--line); font-size:0.92rem;}
   .quiz-feedback p{margin:0 0 0.6rem;}
@@ -156,7 +244,7 @@
   .quiz-result{text-align:center;}
   .quiz-result .score{font-size:2rem; color:var(--bronze); font-weight:700; margin:0.4rem 0 0.6rem;}
   .quiz-result .score-sub{font-size:0.85rem; color:var(--muted); margin-bottom:1rem;}
-  .timer-wrap{height:4px; background:var(--surface-2); border-radius:99px; overflow:hidden; margin-bottom:0.9rem;}
+  .timer-wrap{height:6px; background:var(--surface-2); border-radius:99px; overflow:hidden; margin-bottom:0.9rem;}
   .timer-bar{height:100%; background:var(--patina); width:100%; transition:width 0.1s linear;}
   .timer-bar.urgent{background:var(--wrong);}
   .quiz-timeout{color:var(--wrong); font-weight:600;}
@@ -169,7 +257,7 @@
     font-size:0.82rem; padding:0.35rem 0.8rem; border-radius:99px; border:1px solid var(--line);
     background:var(--ground); color:var(--muted); cursor:pointer; font-family:inherit;
   }
-  .setup-opt.active{background:var(--bronze); border-color:var(--bronze); color:#fff8ec;}
+  .setup-opt.active{background:var(--bronze); border-color:var(--bronze); color:var(--on-accent); font-weight:600;}
   .setup-note{font-size:0.78rem; color:var(--muted); margin:0.4rem 0 0;}
 
   /* --- 履歴 --- */
@@ -183,6 +271,41 @@
   .quiz-history-list li:last-child{border-bottom:none;}
   .qh-mode{font-size:0.75rem; opacity:0.85;}
 
+  /* --- 相性診断 --- */
+  .diag-card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
+  .diag-card h2{font-size:0.8rem; letter-spacing:0.05em; margin:0 0 0.6rem; color:var(--patina);}
+  .diag-lead{font-size:0.92rem; margin:0 0 1rem;}
+  .meter-list{margin:0.4rem 0 1rem;}
+  .meter-row{display:flex; align-items:center; gap:0.6rem; margin-bottom:0.4rem;}
+  .meter-name{font-size:0.8rem; color:var(--muted); width:8.5rem; flex:0 0 auto; text-align:right;}
+  .meter-track{display:block; flex:1 1 auto; height:12px; background:var(--surface-2); border-radius:99px; overflow:hidden;}
+  .meter-fill{display:block; height:100%; background:var(--bronze); border-radius:0 4px 4px 0; min-width:2px;}
+  .meter-val{font-size:0.78rem; color:var(--muted); width:2.6rem; flex:0 0 auto; text-align:right; font-variant-numeric:tabular-nums;}
+  .match-list{list-style:none; margin:0; padding:0;}
+  .match-item{
+    background:var(--ground); border:1px solid var(--line); border-radius:8px;
+    padding:0.9rem 1rem; margin-bottom:0.7rem;
+  }
+  .match-head{display:flex; align-items:baseline; gap:0.6rem; flex-wrap:wrap; margin-bottom:0.4rem;}
+  .match-rank{font-size:0.74rem; color:var(--on-accent); background:var(--patina); border-radius:99px; padding:0.1rem 0.6rem;}
+  .match-name{font-size:1.05rem; font-weight:700;}
+  .match-score{margin-left:auto; font-size:0.95rem; font-weight:700; color:var(--bronze); font-variant-numeric:tabular-nums;}
+  .match-reason{font-size:0.85rem; color:var(--muted); margin:0 0 0.5rem;}
+  .match-ach{font-size:0.85rem; margin:0 0 0.6rem;}
+  .diag-q{font-size:1.02rem; font-weight:600; margin:0 0 0.9rem;}
+  .diag-opts{display:grid; gap:0.6rem;}
+  .diag-opt{
+    text-align:left; padding:0.8rem 1rem; border-radius:6px; border:1px solid var(--line);
+    background:var(--ground); cursor:pointer; font-size:0.95rem; font-family:inherit; color:var(--ink);
+  }
+  .diag-opt:hover{background:var(--surface-2);}
+
+  /* --- アクセシビリティ設定 --- */
+  .a11y-card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
+  .a11y-card h2{font-size:0.8rem; letter-spacing:0.05em; margin:0 0 0.9rem; color:var(--patina);}
+  .a11y-group{margin-bottom:1.1rem;}
+  .a11y-status{font-size:0.8rem; color:var(--muted); margin:0.6rem 0 0;}
+
   /* --- はじめの説明 --- */
   .intro{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
   .intro h2{font-size:1rem; margin:0 0 0.6rem; color:var(--patina);}
@@ -192,16 +315,18 @@
 </style>
 </head>
 <body>
+<a class="skip-link" href="#result">本文へスキップ</a>
 <header>
   <h1>プルタル</h1>
   <p class="tagline">教科書には載っていない、人物の「もう一つの顔」を。</p>
 </header>
 <main>
   <div class="search-row">
+    <label class="visually-hidden" for="searchInput">人物名で検索</label>
     <input type="text" id="searchInput" placeholder="人物名を入力（例: タレス）" autocomplete="off">
     <button class="primary" id="searchBtn">検索</button>
     <div class="toggle">
-      出典:
+      <label for="modeSelect">出典:</label>
       <select id="modeSelect">
         <option value="restricted">制限モード</option>
         <option value="expanded">拡張モード</option>
@@ -214,11 +339,13 @@
     <button class="chip-toggle" id="chipToggle" aria-expanded="false">収録人物の一覧を表示</button>
     <button class="chip-toggle accent" id="quizStartBtn">クイズに挑戦する</button>
     <button class="chip-toggle accent" id="graphBtn">相関図を見る</button>
+    <button class="chip-toggle accent" id="diagBtn">相性診断</button>
+    <button class="chip-toggle" id="a11yBtn">読み上げ・表示設定</button>
   </div>
   <div class="filter-row" id="filterRow" hidden></div>
   <div class="chip-row" id="chipRow" hidden></div>
 
-  <div id="result"></div>
+  <div id="result" role="region" aria-live="polite" aria-label="表示エリア" tabindex="-1"></div>
 </main>
 
 <script src="data/figures.js"></script>
@@ -236,6 +363,15 @@
   const modeSelect = document.getElementById("modeSelect");
   const quizStartBtn = document.getElementById("quizStartBtn");
   const graphBtn   = document.getElementById("graphBtn");
+  const diagBtn    = document.getElementById("diagBtn");
+  const a11yBtn    = document.getElementById("a11yBtn");
+
+  /* =========================================================
+     画面の状態
+     ========================================================= */
+  let currentView = "intro";      // intro / figure / wiki / quiz / graph / diagnosis / a11y
+  let currentFigureId = null;
+  let quizState = null;
 
   /* =========================================================
      共通ユーティリティ
@@ -244,6 +380,10 @@
     const div = document.createElement("div");
     div.textContent = str == null ? "" : String(str);
     return div.innerHTML;
+  }
+  // 属性値に入れる文字列用（引用符も必ずエスケープする）
+  function escapeAttr(str){
+    return escapeHtml(str).replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
   function shuffle(arr){
     const a = arr.slice();
@@ -255,25 +395,93 @@
   }
   function findById(id){ return FIGURES.find((f) => f.id === id); }
   function nameOf(id){ const f = findById(id); return f ? f.name : id; }
+  function listNames(ids, max){
+    const limit = max || 4;
+    const names = ids.map(nameOf);
+    if (names.length <= limit) return names.join("・");
+    return names.slice(0, limit).join("・") + `ほか${names.length - limit}人`;
+  }
+  // 「A・B・Cの3人」「A・B・C・Dなど7人」のように人数つきで並べる
+  function namesWithCount(ids, max){
+    const limit = max || 4;
+    const names = ids.map(nameOf);
+    if (names.length <= limit) return `${names.join("・")}の${names.length}人`;
+    return `${names.slice(0, limit).join("・")}など${names.length}人`;
+  }
+  function readStore(key, fallback){
+    try{
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    }catch(e){ return fallback; }
+  }
+  function writeStore(key, value){
+    try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
+  }
 
   /* =========================================================
-     お気に入り（このブラウザ内にのみ保存）
+     アクセシビリティ設定（読み上げ・文字サイズ・高コントラスト）
      ========================================================= */
-  const FAV_KEY = "purutaru_favorites";
-  function loadFavorites(){
+  const A11Y_KEY = "purutaru_a11y";
+  const a11y = Object.assign(
+    { autoSpeak:false, rate:1, fontSize:"normal", contrast:false },
+    readStore(A11Y_KEY, {})
+  );
+  const speechAvailable = typeof window !== "undefined" && "speechSynthesis" in window;
+
+  function applyA11y(){
+    document.documentElement.classList.toggle("fs-l",  a11y.fontSize === "large");
+    document.documentElement.classList.toggle("fs-xl", a11y.fontSize === "xlarge");
+    document.body.classList.toggle("hc", !!a11y.contrast);
+    writeStore(A11Y_KEY, a11y);
+  }
+  function stopSpeech(){
+    if (!speechAvailable) return;
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+  }
+  function speak(text){
+    if (!speechAvailable || !text) return false;
     try{
-      const raw = localStorage.getItem(FAV_KEY);
-      return raw ? new Set(JSON.parse(raw)) : new Set();
-    }catch(e){ return new Set(); }
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(String(text).replace(/\s+/g, " ").slice(0, 1200));
+      u.lang = "ja-JP";
+      u.rate = a11y.rate;
+      window.speechSynthesis.speak(u);
+      return true;
+    }catch(e){ return false; }
   }
-  function saveFavorites(set){
-    try{ localStorage.setItem(FAV_KEY, JSON.stringify([...set])); }catch(e){}
+  function autoSpeak(text){ if (a11y.autoSpeak) speak(text); }
+  // 読み上げボタン（data-speak属性のテキストを読む）
+  function bindSpeakButtons(){
+    resultEl.querySelectorAll("[data-speak]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const ok = speak(btn.dataset.speak);
+        if (!ok) btn.textContent = "読み上げ非対応";
+      });
+    });
   }
-  let favorites = loadFavorites();
+  function speakBtnHtml(text, label){
+    if (!speechAvailable) return "";
+    return `<button class="speak-btn" data-speak="${escapeAttr(text)}" aria-label="${escapeAttr(label || "読み上げる")}">🔊 読み上げ</button>`;
+  }
+  applyA11y();
+
+  /* =========================================================
+     お気に入り・閲覧履歴（このブラウザ内にのみ保存）
+     ========================================================= */
+  const FAV_KEY  = "purutaru_favorites";
+  const VIEW_KEY = "purutaru_views";
+
+  let favorites = new Set(readStore(FAV_KEY, []));
   const isFavorite = (id) => favorites.has(id);
   function toggleFavorite(id){
     if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
-    saveFavorites(favorites);
+    writeStore(FAV_KEY, [...favorites]);
+  }
+  let viewCounts = readStore(VIEW_KEY, {});
+  function recordView(id){
+    if (!findById(id)) return;
+    viewCounts[id] = (viewCounts[id] || 0) + 1;
+    writeStore(VIEW_KEY, viewCounts);
   }
 
   /* =========================================================
@@ -310,9 +518,11 @@
     const favBtn = document.createElement("button");
     favBtn.className = "filter-chip fav-filter";
     favBtn.textContent = "★ お気に入りのみ";
+    favBtn.setAttribute("aria-pressed", "false");
     favBtn.addEventListener("click", () => {
       showFavoritesOnly = !showFavoritesOnly;
       favBtn.classList.toggle("active", showFavoritesOnly);
+      favBtn.setAttribute("aria-pressed", String(showFavoritesOnly));
       renderChips();
     });
     filterRow.appendChild(favBtn);
@@ -367,11 +577,25 @@
   /* =========================================================
      相関データの索引づくり
      ========================================================= */
-  const relByFigure = new Map();
-  FIGURES.forEach((f) => relByFigure.set(f.id, []));
+  const relByFigure = new Map();   // 人物ID → その人が関わる関係の一覧
+  const ADJ  = new Map();          // 無向グラフの隣接（相関図・距離計算用）
+  const DOWN = new Map();          // 影響が流れる向き（X → Y ＝ XがYを育てた・Yに影響を与えた）
+
+  FIGURES.forEach((f) => {
+    relByFigure.set(f.id, []);
+    ADJ.set(f.id, new Set());
+    DOWN.set(f.id, new Set());
+  });
   RELATIONS.forEach((rel) => {
     if (relByFigure.has(rel.from)) relByFigure.get(rel.from).push({ rel, dir: "out", other: rel.to });
     if (relByFigure.has(rel.to))   relByFigure.get(rel.to).push({ rel, dir: "in",  other: rel.from });
+    if (ADJ.has(rel.from) && ADJ.has(rel.to)){
+      ADJ.get(rel.from).add(rel.to);
+      ADJ.get(rel.to).add(rel.from);
+    }
+    // 「師弟」は from が師、「影響」は from が to から影響を受けた側
+    if (rel.type === "師弟" && DOWN.has(rel.from)) DOWN.get(rel.from).add(rel.to);
+    else if (rel.type === "影響" && DOWN.has(rel.to)) DOWN.get(rel.to).add(rel.from);
   });
 
   // その人物から見た関係の説明（矢印の向きで言い回しを変える）
@@ -399,6 +623,38 @@
       case "政敵": return "と対立した";
       default:     return "とつながりがある";
     }
+  }
+
+  // 図式にしたときの「主語 → 相手」と動詞。mutual なら両向き矢印。
+  function relArrow(rel){
+    switch(rel.type){
+      case "師弟": return { left: rel.from, right: rel.to,  verb: "師である",     mutual:false };
+      case "影響": return { left: rel.to,   right: rel.from, verb: "影響を与えた", mutual:false };
+      case "論敵": return { left: rel.from, right: rel.to,  verb: "批判・風刺した", mutual:false };
+      case "記録": return { left: rel.from, right: rel.to,  verb: "書き残した",   mutual:false };
+      case "友人": return { left: rel.from, right: rel.to,  verb: "親交があった", mutual:true  };
+      case "競合": return { left: rel.from, right: rel.to,  verb: "競い合った",   mutual:true  };
+      case "政敵": return { left: rel.from, right: rel.to,  verb: "対立した",     mutual:true  };
+      default:     return { left: rel.from, right: rel.to,  verb: "つながりがある", mutual:true };
+    }
+  }
+
+  function relDiagramHtml(rel){
+    const a = relArrow(rel);
+    return `
+      <div class="rd-wrap">
+        <span class="rd-type">${escapeHtml(rel.type)}</span>
+        <div class="rel-diagram">
+          <div class="rd-node">${escapeHtml(nameOf(a.left))}</div>
+          <div class="rd-arrow">
+            <div class="rd-line${a.mutual ? " both" : ""}"></div>
+            <span class="rd-verb">${escapeHtml(a.verb)}</span>
+          </div>
+          <div class="rd-node">${escapeHtml(nameOf(a.right))}</div>
+        </div>
+        <p class="rd-caption">${escapeHtml(rel.label)}</p>
+      </div>
+    `;
   }
 
   function renderRelationsCard(figId){
@@ -435,11 +691,249 @@
   }
 
   /* =========================================================
+     影響力の分析（「もしこの人物がいなかったら」の土台）
+     ========================================================= */
+  let influenceCache = null;
+
+  function bfsFrom(start, exclude){
+    const dist = new Map([[start, 0]]);
+    const q = [start];
+    let qi = 0;
+    while (qi < q.length){
+      const v = q[qi++];
+      ADJ.get(v).forEach((w) => {
+        if (w === exclude || dist.has(w)) return;
+        dist.set(w, dist.get(v) + 1);
+        q.push(w);
+      });
+    }
+    return dist;
+  }
+
+  // 平均距離：excludeFromGraph を取り除いたグラフで、excludeFromPairs を除く全ペアの平均
+  function pairStats(excludeFromGraph, excludeFromPairs){
+    const list = FIGURES.map((f) => f.id).filter((id) => id !== excludeFromPairs);
+    let reach = 0, sum = 0;
+    for (let i = 0; i < list.length; i++){
+      const dist = bfsFrom(list[i], excludeFromGraph);
+      for (let j = i + 1; j < list.length; j++){
+        const d = dist.get(list[j]);
+        if (d !== undefined){ reach++; sum += d; }
+      }
+    }
+    return { reach, avg: reach ? sum / reach : 0 };
+  }
+
+  // 影響の系譜（DOWNをたどって下流に連なる人物）
+  function lineageOf(id){
+    const parent = new Map();
+    const depth  = new Map();
+    const q = [];
+    DOWN.get(id).forEach((d) => { depth.set(d, 1); parent.set(d, id); q.push(d); });
+    let qi = 0;
+    while (qi < q.length){
+      const v = q[qi++];
+      DOWN.get(v).forEach((w) => {
+        if (w === id || depth.has(w)) return;
+        depth.set(w, depth.get(v) + 1);
+        parent.set(w, v);
+        q.push(w);
+      });
+    }
+    const all = [...depth.keys()];
+    let maxGen = 0, deepest = null;
+    all.forEach((x) => { if (depth.get(x) > maxGen){ maxGen = depth.get(x); deepest = x; } });
+    const chain = [];
+    let cur = deepest;
+    while (cur){ chain.unshift(cur); cur = (cur === id) ? null : parent.get(cur); }
+    return { direct: [...DOWN.get(id)], all, maxGen, chain };
+  }
+
+  function computeInfluence(){
+    if (influenceCache) return influenceCache;
+    const ids = FIGURES.map((f) => f.id);
+
+    // 媒介中心性（Brandesのアルゴリズム）
+    const bc = new Map(ids.map((i) => [i, 0]));
+    ids.forEach((s) => {
+      const S = [], P = new Map(), sigma = new Map(), dist = new Map();
+      ids.forEach((i) => { P.set(i, []); sigma.set(i, 0); dist.set(i, -1); });
+      sigma.set(s, 1); dist.set(s, 0);
+      const Q = [s];
+      let qi = 0;
+      while (qi < Q.length){
+        const v = Q[qi++];
+        S.push(v);
+        ADJ.get(v).forEach((w) => {
+          if (dist.get(w) < 0){ dist.set(w, dist.get(v) + 1); Q.push(w); }
+          if (dist.get(w) === dist.get(v) + 1){
+            sigma.set(w, sigma.get(w) + sigma.get(v));
+            P.get(w).push(v);
+          }
+        });
+      }
+      const delta = new Map(ids.map((i) => [i, 0]));
+      for (let k = S.length - 1; k >= 0; k--){
+        const w = S[k];
+        P.get(w).forEach((v) => {
+          delta.set(v, delta.get(v) + (sigma.get(v) / sigma.get(w)) * (1 + delta.get(w)));
+        });
+        if (w !== s) bc.set(w, bc.get(w) + delta.get(w));
+      }
+    });
+
+    const ranked = [...bc.entries()].map(([id, v]) => ({ id, v: v / 2 }))
+      .sort((a, b) => b.v - a.v);
+    const bcRank = new Map(ranked.map((r, i) => [r.id, i + 1]));
+
+    const map = new Map();
+    ids.forEach((id) => {
+      const lin = lineageOf(id);
+      const full = pairStats(null, id);
+      const rem  = pairStats(id, id);
+
+      // この人物を取り除くと孤立する人物
+      const remaining = ids.filter((x) => x !== id);
+      const seen = new Set();
+      const comps = [];
+      remaining.forEach((s) => {
+        if (seen.has(s)) return;
+        const comp = [...bfsFrom(s, id).keys()].filter((x) => x !== id);
+        comp.forEach((c) => seen.add(c));
+        comps.push(comp);
+      });
+      comps.sort((a, b) => b.length - a.length);
+      const cutoff = comps.slice(1).reduce((acc, c) => acc.concat(c), []);
+
+      const entries = relByFigure.get(id) || [];
+      map.set(id, {
+        degree: ADJ.get(id).size,
+        relCount: entries.length,
+        lineage: lin,
+        recordedBy: entries.filter((e) => e.rel.type === "記録" && e.dir === "in").map((e) => e.other),
+        wroteAbout: entries.filter((e) => e.rel.type === "記録" && e.dir === "out").map((e) => e.other),
+        rivals: entries.filter((e) => ["論敵", "競合", "政敵"].indexOf(e.rel.type) >= 0).map((e) => e.other),
+        friends: entries.filter((e) => e.rel.type === "友人").map((e) => e.other),
+        sources: entries.filter((e) => (e.rel.type === "影響" && e.dir === "out") || (e.rel.type === "師弟" && e.dir === "in")).map((e) => e.other),
+        bc: (bc.get(id) || 0) / 2,
+        bcRank: bcRank.get(id),
+        avgBefore: full.avg,
+        avgAfter: rem.avg,
+        cutoff,
+      });
+    });
+    influenceCache = map;
+    return influenceCache;
+  }
+
+  function influenceTier(rank){
+    if (rank <= 5)  return "ネットワークの中心";
+    if (rank <= 15) return "重要な橋渡し役";
+    if (rank <= 30) return "つながりの一翼";
+    return "受け継ぐ側の人物";
+  }
+
+  function influenceSentences(fig){
+    const inf = computeInfluence().get(fig.id);
+    const s = [];
+    const lin = inf.lineage;
+
+    if (lin.direct.length > 0){
+      s.push(`${fig.name}から直接つながる影響を受けたのは、${namesWithCount(lin.direct)}です。${fig.name}がいなければ、この${lin.direct.length}人が受け取ったものはそのまま失われます。`);
+      if (lin.all.length > lin.direct.length){
+        s.push(`影響はそこで止まりません。弟子の弟子、読者のさらに読者へと連鎖し、最大${lin.maxGen}世代先まで、合計${lin.all.length}人に届いていた流れが断たれます。`);
+      }
+    }else if (inf.sources.length > 0){
+      s.push(`この42人の中に、${fig.name}から直接影響を受けたと確認できる人物はいません。${fig.name}は${listNames(inf.sources)}から受け継いだものを、自分の作品や業績として受け止めた側の人物です。`);
+    }else{
+      s.push(`この42人の中では、${fig.name}が誰かに直接影響を与えた記録も、誰かから直接受け継いだ記録も確認できていません。${fig.name}は、記録や論争といった別の形でこのネットワークにつながっています。`);
+    }
+
+    if (inf.wroteAbout.length > 0){
+      s.push(`${fig.name}が${listNames(inf.wroteAbout)}について書き残した記録も、生まれなかったことになります。今の私たちが知る手がかりが、その分だけ減ります。`);
+    }
+    if (inf.recordedBy.length > 0){
+      const head = inf.wroteAbout.length > 0 ? "逆に、" : "";
+      s.push(`${head}${listNames(inf.recordedBy)}が${fig.name}について書き残していますが、その記録も存在しなかったことになります。`);
+    }
+    if (inf.rivals.length > 0){
+      s.push(`${listNames(inf.rivals)}との論争や対立も、起こらなかったことになります。`);
+    }
+    if (inf.friends.length > 0){
+      s.push(`${listNames(inf.friends)}との親交も、なかったことになります。`);
+    }
+
+    const diff = inf.avgAfter - inf.avgBefore;
+    const rankText = `相関図の上で人と人を仲立ちする度合い（媒介中心性）は、42人中${inf.bcRank}位。`;
+    if (Math.abs(diff) < 0.005){
+      s.push(`${rankText}この人物を取り除いても、人物どうしの平均的な隔たりはほとんど変わりません。まわりに代わりの経路が十分あるためです。`);
+    }else if (diff > 0){
+      s.push(`${rankText}この人物を取り除くと、人物どうしの平均的な隔たりが ${inf.avgBefore.toFixed(2)} から ${inf.avgAfter.toFixed(2)} に広がり、ネットワーク全体が遠くなります。`);
+    }else{
+      s.push(`${rankText}この人物を取り除くと、つながりそのものを失う人が出るため、残った人どうしだけで見た平均的な隔たりは ${inf.avgBefore.toFixed(2)} から ${inf.avgAfter.toFixed(2)} になります。`);
+    }
+    if (inf.cutoff.length > 0){
+      s.push(`とくに${listNames(inf.cutoff)}は、${fig.name}を失うと相関図の中で完全に孤立し、ほかの誰ともつながらなくなります。`);
+    }
+    return { sentences: s, inf };
+  }
+
+  function renderInfluenceCard(fig){
+    const { sentences, inf } = influenceSentences(fig);
+    const lin = inf.lineage;
+    const chainHtml = (lin.chain.length >= 3)
+      ? `<span class="inf-chain">影響のたどり方の一例：${escapeHtml(lin.chain.map(nameOf).join(" → "))}</span>`
+      : "";
+    // 連鎖の説明のすぐ後ろに、たどり方の例を差し込む
+    const blocks = sentences.map((t) => `<p>${escapeHtml(t)}</p>`);
+    if (chainHtml){
+      const at = Math.min(lin.all.length > lin.direct.length ? 2 : 1, blocks.length);
+      blocks.splice(at, 0, chainHtml);
+    }
+    const body = blocks.join("");
+    const speakText = `もしこの人物がいなかったら。${sentences.join("")}`;
+    return `
+      <div class="inf-card">
+        <div class="card-head">
+          <h2>もしこの人物がいなかったら</h2>
+          <div class="card-tools">${speakBtnHtml(speakText, "影響の説明を読み上げる")}</div>
+        </div>
+        <div class="inf-tier">この42人のネットワークでの位置づけ：${escapeHtml(influenceTier(inf.bcRank))}</div>
+        <div class="inf-stats">
+          <div class="inf-stat">
+            <span class="inf-stat-label">直接のつながり</span>
+            <span class="inf-stat-value">${inf.relCount}<span class="inf-stat-unit">件</span></span>
+          </div>
+          <div class="inf-stat">
+            <span class="inf-stat-label">影響が連鎖する人数</span>
+            <span class="inf-stat-value">${lin.all.length}<span class="inf-stat-unit">人</span></span>
+          </div>
+          <div class="inf-stat">
+            <span class="inf-stat-label">橋渡し度（42人中）</span>
+            <span class="inf-stat-value">${inf.bcRank}<span class="inf-stat-unit">位</span></span>
+          </div>
+        </div>
+        <div class="inf-body">${body}</div>
+        <p class="inf-note">この文章は、収録した${RELATIONS.length}件の関係データをグラフとして解析し、影響の連鎖・媒介中心性・平均距離の変化から自動生成しています。</p>
+      </div>
+    `;
+  }
+
+  /* =========================================================
      人物カードの表示
      ========================================================= */
   function renderFigure(id){
     const fig = findById(id);
     if (!fig) return;
+    stopTimer();
+    stopSpeech();
+    quizState = null;
+    // 同じ人物の再描画（お気に入り切替など）では閲覧数を二重に数えない
+    const isNewView = currentFigureId !== id || currentView !== "figure";
+    currentView = "figure";
+    currentFigureId = id;
+    if (isNewView) recordView(id);
+
     const sourceLabel = modeSelect.value === "expanded"
       ? "拡張モード（提出版では制限モードと同じ内容を表示）"
       : "制限モード（Wikipedia等に限定）";
@@ -447,15 +941,21 @@
     const achievementHtml = fig.achievement
       ? `<div class="achievement"><span class="achievement-label">教科書での実績</span>${escapeHtml(fig.achievement)}</div>`
       : "";
+    const readAloud = `${fig.name}。教科書での実績、${fig.achievement || "記載なし"}。もう一つの顔。${fig.hidden_face}`;
+
     resultEl.innerHTML = `
       ${achievementHtml}
       <div class="card hidden">
         <div class="card-head">
           <h2>もう一つの顔</h2>
-          <button class="fav-star${fav ? " active" : ""}" id="favBtn" title="お気に入りに登録/解除" aria-pressed="${fav}">${fav ? "★" : "☆"}</button>
+          <div class="card-tools">
+            ${speakBtnHtml(readAloud, fig.name + "の解説を読み上げる")}
+            <button class="fav-star${fav ? " active" : ""}" id="favBtn" title="お気に入りに登録/解除" aria-pressed="${fav}" aria-label="お気に入り">${fav ? "★" : "☆"}</button>
+          </div>
         </div>
         <p>${escapeHtml(fig.hidden_face)}</p>
       </div>
+      ${renderInfluenceCard(fig)}
       <div class="meta">${escapeHtml(fig.name)}（${escapeHtml(fig.name_en)}） / ${escapeHtml(fig.category)}・${escapeHtml(fig.genre)}</div>
       <div class="source">出典: ${escapeHtml(fig.source)}　|　${sourceLabel}　|　<a href="${escapeHtml(fig.source_url)}" target="_blank" rel="noopener">参照元を見る</a></div>
       ${renderRelationsCard(fig.id)}
@@ -466,12 +966,16 @@
       renderChips();
     });
     bindRelationLinks();
+    bindSpeakButtons();
+    autoSpeak(readAloud);
   }
 
   /* =========================================================
      Wikipedia直接取得（データベース未収録の人物向け）
      ========================================================= */
   async function renderFromWikipedia(query){
+    currentView = "wiki";
+    currentFigureId = null;
     resultEl.innerHTML = `<p class="loading">Wikipediaで「${escapeHtml(query)}」を検索しています…</p>`;
     try{
       const url = `https://ja.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
@@ -527,6 +1031,8 @@
     const query = searchInput.value.trim();
     if (!query) return;
     stopTimer();
+    stopSpeech();
+    quizState = null;
     const matches = searchByName(query);
     suggestList.innerHTML = "";
     if (matches.length === 0){
@@ -542,8 +1048,7 @@
   searchInput.addEventListener("input", () => renderSuggestions(searchInput.value));
   searchInput.addEventListener("keydown", (e) => { if (e.key === "Enter") handleSearch(); });
   modeSelect.addEventListener("change", () => {
-    const active = chipRow.querySelector(".chip.active");
-    if (active && !quizState) renderFigure(active.dataset.id);
+    if (currentView === "figure" && currentFigureId) renderFigure(currentFigureId);
   });
 
   /* =========================================================
@@ -552,20 +1057,13 @@
   const QUIZ_HISTORY_KEY = "purutaru_quiz_history";
   const QUIZ_HISTORY_MAX = 20;
 
-  function loadQuizHistory(){
-    try{
-      const raw = localStorage.getItem(QUIZ_HISTORY_KEY);
-      return raw ? JSON.parse(raw) : [];
-    }catch(e){ return []; }
-  }
+  function loadQuizHistory(){ return readStore(QUIZ_HISTORY_KEY, []); }
   function saveQuizResult(correct, total, note){
-    try{
-      const history = loadQuizHistory();
-      history.unshift({ date: new Date().toISOString(), correct, total, note: note || "" });
-      const trimmed = history.slice(0, QUIZ_HISTORY_MAX);
-      localStorage.setItem(QUIZ_HISTORY_KEY, JSON.stringify(trimmed));
-      return trimmed;
-    }catch(e){ return loadQuizHistory(); }
+    const history = loadQuizHistory();
+    history.unshift({ date: new Date().toISOString(), correct, total, note: note || "" });
+    const trimmed = history.slice(0, QUIZ_HISTORY_MAX);
+    writeStore(QUIZ_HISTORY_KEY, trimmed);
+    return trimmed;
   }
   function formatQuizDate(iso){
     const d = new Date(iso);
@@ -595,12 +1093,10 @@
   /* =========================================================
      クイズ
      ========================================================= */
-  let quizState = null;
-
   const quizSettings = {
     format: "mix",     // achievement（実績→人物名） / name（人物名→実績） / mix
     scope: "all",      // all / region:ギリシャ / genre:哲学者 ...
-    count: 8,          // 問題数
+    count: 8,          // 問題数（数値 または "all"）
     timeLimit: 0,      // 0 = 制限なし、それ以外は秒
   };
 
@@ -623,15 +1119,19 @@
 
   function renderQuizSetup(){
     stopTimer();
+    stopSpeech();
     quizState = null;
+    currentView = "quiz";
     const pool = quizPool(quizSettings.scope);
     const maxCount = pool.length;
-    if (quizSettings.count !== "all" && quizSettings.count > maxCount){
-      quizSettings.count = maxCount;
+    const countChoices = [5, 8, 10, 15].filter((n) => n < maxCount);
+    // 選べる問題数を超えていたら「全問」に寄せる（どのボタンも選択中にならない状態を防ぐ）
+    if (quizSettings.count !== "all" && quizSettings.count >= maxCount){
+      quizSettings.count = "all";
     }
 
     const opt = (group, value, text, current) =>
-      `<button class="setup-opt${String(current) === String(value) ? " active" : ""}" data-group="${group}" data-value="${escapeHtml(String(value))}">${escapeHtml(text)}</button>`;
+      `<button class="setup-opt${String(current) === String(value) ? " active" : ""}" data-group="${group}" data-value="${escapeHtml(String(value))}" aria-pressed="${String(current) === String(value)}">${escapeHtml(text)}</button>`;
 
     const scopeOpts = [
       opt("scope", "all", "すべて", quizSettings.scope),
@@ -639,7 +1139,7 @@
       ...genres.map((g) => opt("scope", "genre:" + g, g, quizSettings.scope)),
     ].join("");
 
-    const countOpts = [5, 8, 10, 15].filter((n) => n <= maxCount)
+    const countOpts = countChoices
       .map((n) => opt("count", n, n + "問", quizSettings.count)).join("")
       + opt("count", "all", `全${maxCount}問`, quizSettings.count);
 
@@ -656,8 +1156,8 @@
         <div class="quiz-question-label">クイズの設定</div>
 
         <div class="setup-group">
-          <div class="setup-label">出題形式</div>
-          <div class="setup-opts">
+          <div class="setup-label" id="lblFormat">出題形式</div>
+          <div class="setup-opts" role="group" aria-labelledby="lblFormat">
             ${opt("format", "achievement", "実績→人物名", quizSettings.format)}
             ${opt("format", "name", "人物名→実績", quizSettings.format)}
             ${opt("format", "mix", "ミックス", quizSettings.format)}
@@ -665,19 +1165,19 @@
         </div>
 
         <div class="setup-group">
-          <div class="setup-label">出題範囲</div>
-          <div class="setup-opts">${scopeOpts}</div>
+          <div class="setup-label" id="lblScope">出題範囲</div>
+          <div class="setup-opts" role="group" aria-labelledby="lblScope">${scopeOpts}</div>
           <p class="setup-note">この範囲に${maxCount}人が該当します。選択肢のダミーは範囲外からも選ばれることがあります。</p>
         </div>
 
         <div class="setup-group">
-          <div class="setup-label">問題数</div>
-          <div class="setup-opts">${countOpts}</div>
+          <div class="setup-label" id="lblCount">問題数</div>
+          <div class="setup-opts" role="group" aria-labelledby="lblCount">${countOpts}</div>
         </div>
 
         <div class="setup-group">
-          <div class="setup-label">1問あたりの制限時間</div>
-          <div class="setup-opts">${timeOpts}</div>
+          <div class="setup-label" id="lblTime">1問あたりの制限時間</div>
+          <div class="setup-opts" role="group" aria-labelledby="lblTime">${timeOpts}</div>
           <p class="setup-note">時間切れになった問題は不正解として扱われます。</p>
         </div>
 
@@ -700,10 +1200,7 @@
       });
     });
     document.getElementById("quizGoBtn").addEventListener("click", () => startQuiz());
-    document.getElementById("quizCancelBtn").addEventListener("click", () => {
-      quizState = null;
-      renderIntro();
-    });
+    document.getElementById("quizCancelBtn").addEventListener("click", () => renderIntro());
   }
 
   // 1問分を組み立てる。mode: "achievement"（実績を見て人物名を当てる）/ "name"（人物名を見て実績を当てる）
@@ -719,16 +1216,17 @@
     return { fig, mode, options: shuffle([fig, ...distractors]) };
   }
 
+  function pickMode(){
+    return quizSettings.format === "mix"
+      ? (Math.random() < 0.5 ? "achievement" : "name")
+      : quizSettings.format;
+  }
+
   function buildQuizQuestions(){
     const pool = quizPool(quizSettings.scope);
     const n = quizSettings.count === "all" ? pool.length : Math.min(quizSettings.count, pool.length);
     const chosen = shuffle(pool).slice(0, n);
-    return chosen.map((fig) => {
-      const mode = quizSettings.format === "mix"
-        ? (Math.random() < 0.5 ? "achievement" : "name")
-        : quizSettings.format;
-      return buildQuestion(fig, mode, pool);
-    });
+    return chosen.map((fig) => buildQuestion(fig, pickMode(), pool));
   }
 
   function startQuiz(questions, note){
@@ -745,6 +1243,7 @@
       wrongFigIds: [],
       note: note || `${FORMAT_LABEL[quizSettings.format]}・${scopeLabel(quizSettings.scope)}`,
     };
+    currentView = "quiz";
     chipRow.hidden = true;
     filterRow.hidden = true;
     chipToggle.textContent = "収録人物の一覧を表示";
@@ -777,6 +1276,7 @@
 
   function renderQuizQuestion(){
     stopTimer();
+    stopSpeech();
     const { questions, index, correctCount } = quizState;
     const q = questions[index];
     quizState.answered = false;
@@ -791,11 +1291,17 @@
     const timerHtml = quizSettings.timeLimit > 0
       ? `<div class="timer-wrap"><div class="timer-bar" id="timerBar"></div></div>` : "";
 
+    const readAloud = `${questionLabel}　${questionText}。選択肢。` +
+      q.options.map((o, i) => `${i + 1}番、${optionText(o)}。`).join("");
+
     resultEl.innerHTML = `
       <div class="quiz-card">
         <div class="quiz-progress">問題 ${index + 1} / ${questions.length}　|　正解 ${correctCount}　|　${escapeHtml(quizState.note)}</div>
         ${timerHtml}
-        <div class="quiz-question-label">${questionLabel}</div>
+        <div class="card-head">
+          <div class="quiz-question-label">${questionLabel}</div>
+          <div class="card-tools">${speakBtnHtml(readAloud, "問題を読み上げる")}</div>
+        </div>
         <p class="quiz-question">${escapeHtml(questionText)}</p>
         <div class="quiz-options${isAchievementMode ? "" : " wide"}">
           ${q.options.map((o) => `<button class="quiz-option" data-id="${escapeHtml(o.id)}">${escapeHtml(optionText(o))}</button>`).join("")}
@@ -806,6 +1312,8 @@
     resultEl.querySelectorAll(".quiz-option").forEach((btn) => {
       btn.addEventListener("click", () => handleQuizAnswer(btn.dataset.id, false));
     });
+    bindSpeakButtons();
+    autoSpeak(readAloud);
     if (quizSettings.timeLimit > 0) startTimer(quizSettings.timeLimit);
   }
 
@@ -840,7 +1348,8 @@
         </div>
       </div>
     `;
-    document.getElementById("quizNextBtn").addEventListener("click", () => {
+    const nextBtn = document.getElementById("quizNextBtn");
+    nextBtn.addEventListener("click", () => {
       if (isLast){
         renderQuizResult();
       }else{
@@ -848,10 +1357,13 @@
         renderQuizQuestion();
       }
     });
+    nextBtn.focus();
+    autoSpeak(`${timedOut ? "時間切れ" : (isCorrect ? "正解" : "不正解")}。正解は${q.fig.name}。もう一つの顔。${q.fig.hidden_face}`);
   }
 
   function renderQuizResult(){
     stopTimer();
+    stopSpeech();
     const { questions, correctCount, wrongFigIds, note } = quizState;
     const history = saveQuizResult(correctCount, questions.length, note);
     const rate = Math.round((correctCount / questions.length) * 100);
@@ -881,31 +1393,33 @@
     if (wrongUnique.length > 0){
       document.getElementById("quizRetryWrongBtn").addEventListener("click", () => {
         const pool = quizPool(quizSettings.scope);
-        const qs = shuffle(wrongUnique).map((id) => {
-          const fig = findById(id);
-          const mode = quizSettings.format === "mix"
-            ? (Math.random() < 0.5 ? "achievement" : "name")
-            : quizSettings.format;
-          return buildQuestion(fig, mode, pool.length >= 4 ? pool : FIGURES.filter((f) => f.achievement));
-        });
+        const usable = pool.length >= 4 ? pool : FIGURES.filter((f) => f.achievement);
+        const qs = shuffle(wrongUnique).map((id) => buildQuestion(findById(id), pickMode(), usable));
         startQuiz(qs, "復習（間違えた問題）");
       });
     }
     document.getElementById("quizAgainBtn").addEventListener("click", () => startQuiz());
     document.getElementById("quizSetupBtn").addEventListener("click", renderQuizSetup);
-    document.getElementById("quizExitBtn").addEventListener("click", () => {
-      quizState = null;
-      renderIntro();
-    });
+    document.getElementById("quizExitBtn").addEventListener("click", () => renderIntro());
+    // 結果を表示し終えた時点でクイズは終了（他の機能の動作を妨げないようにする）
+    quizState = null;
+    autoSpeak(`クイズ結果。${questions.length}問中${correctCount}問正解。正答率${rate}パーセント。`);
   }
 
   quizStartBtn.addEventListener("click", renderQuizSetup);
 
   /* =========================================================
-     相関図（力学モデルによる自動レイアウト）
+     相関図（力学モデルによる自動レイアウト＋拡大縮小・移動）
      ========================================================= */
   const GRAPH_W = 900, GRAPH_H = 640;
   let graphLayout = null;
+  let graphSelection = null;              // {type:"node"|"edge", id|index}
+  // スマホなど画面が狭いときは、文字が読める大きさで中央付近から表示する
+  function defaultGraphView(){
+    if (window.innerWidth < 640) return { x:175, y:70, w:550, h:510 };
+    return { x:0, y:0, w:GRAPH_W, h:GRAPH_H };
+  }
+  let graphView = defaultGraphView();
 
   // 図の上では長い名前を短く表示する（正式名はマウスオーバーで出る）
   const GRAPH_SHORT_NAME = { marcus_aurelius: "マルクス=アウレリウス" };
@@ -972,97 +1486,590 @@
     return { ids, idx, pos, edges, degree };
   }
 
-  function renderGraph(selectedId){
-    stopTimer();
-    quizState = null;
-    if (!graphLayout) graphLayout = computeGraphLayout();
+  function graphSvgMarkup(){
     const { ids, idx, pos, degree } = graphLayout;
-
-    const neighbors = new Set();
-    if (selectedId){
-      (relByFigure.get(selectedId) || []).forEach((e) => neighbors.add(e.other));
-      neighbors.add(selectedId);
-    }
-
-    const edgeSvg = RELATIONS.map((r) => {
+    const edgeSvg = RELATIONS.map((r, i) => {
       const a = pos[idx.get(r.from)], b = pos[idx.get(r.to)];
       if (!a || !b) return "";
-      let cls = "gedge";
-      if (selectedId){
-        cls += (r.from === selectedId || r.to === selectedId) ? " hot" : " dim";
-      }
-      return `<line class="${cls}" x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}" />`;
+      const x1 = a.x.toFixed(1), y1 = a.y.toFixed(1), x2 = b.x.toFixed(1), y2 = b.y.toFixed(1);
+      return `<g class="gedge-g" data-edge="${i}">
+        <line class="gedge" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" />
+        <line class="gedge-hit" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"><title>${escapeHtml(nameOf(r.from) + " ・ " + nameOf(r.to) + "（" + r.type + "）")}</title></line>
+      </g>`;
     }).join("");
 
     const nodeSvg = ids.map((id, i) => {
       const fig = findById(id);
       const p = pos[i];
       const r = 4.5 + Math.min(degree[i], 14) * 0.55;
-      const color = fig.category === "ローマ" ? "#a06a26" : "#3c6a5f";
-      let cls = "gnode";
-      if (selectedId){
-        if (id === selectedId) cls += " sel";
-        else if (!neighbors.has(id)) cls += " dim";
-      }
-      return `<g class="${cls}" data-node="${escapeHtml(id)}">
-        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r.toFixed(1)}" fill="${color}"><title>${escapeHtml(fig.name)}（つながり ${degree[i]}件）</title></circle>
+      const region = fig.category === "ローマ" ? "roman" : "greek";
+      return `<g class="gnode ${region}" data-node="${escapeHtml(id)}">
+        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r.toFixed(1)}"><title>${escapeHtml(fig.name)}（つながり ${degree[i]}件）</title></circle>
         <text x="${p.x.toFixed(1)}" y="${(p.y - r - 3).toFixed(1)}">${escapeHtml(graphLabel(fig))}</text>
       </g>`;
     }).join("");
 
-    let detail = `<p class="setup-note">人物を選ぶと、その人のつながりだけを強調して表示します。</p>`;
-    if (selectedId){
-      const fig = findById(selectedId);
-      detail = `
+    return `<g id="gEdges">${edgeSvg}</g><g id="gNodes">${nodeSvg}</g>`;
+  }
+
+  function applyGraphView(){
+    const svg = document.getElementById("graphSvg");
+    if (!svg) return;
+    svg.setAttribute("viewBox", `${graphView.x.toFixed(1)} ${graphView.y.toFixed(1)} ${graphView.w.toFixed(1)} ${graphView.h.toFixed(1)}`);
+  }
+
+  function zoomGraph(factor, cx, cy){
+    const minW = GRAPH_W * 0.22, maxW = GRAPH_W * 1.35;
+    let newW = graphView.w / factor;
+    newW = Math.max(minW, Math.min(maxW, newW));
+    const scale = newW / graphView.w;
+    const newH = graphView.h * scale;
+    const px = (cx === undefined) ? graphView.x + graphView.w / 2 : cx;
+    const py = (cy === undefined) ? graphView.y + graphView.h / 2 : cy;
+    graphView.x = px - (px - graphView.x) * scale;
+    graphView.y = py - (py - graphView.y) * scale;
+    graphView.w = newW;
+    graphView.h = newH;
+    applyGraphView();
+  }
+
+  function resetGraphView(){
+    graphView = { x:0, y:0, w:GRAPH_W, h:GRAPH_H };
+    applyGraphView();
+  }
+
+  function svgPointFromEvent(svg, ev){
+    const rect = svg.getBoundingClientRect();
+    const rx = (ev.clientX - rect.left) / rect.width;
+    const ry = (ev.clientY - rect.top) / rect.height;
+    return { x: graphView.x + rx * graphView.w, y: graphView.y + ry * graphView.h };
+  }
+
+  function bindGraphInteraction(){
+    const svg = document.getElementById("graphSvg");
+    if (!svg) return;
+    const pointers = new Map();
+    let dragging = false, moved = false;
+    let last = null, pinchDist = 0;
+    // ドラッグ中はポインタを捕捉するため、クリック時の対象がSVG全体に置き換わる。
+    // どの点・線を押したかは、押した瞬間の対象を覚えておいて判定する。
+    let downTarget = null;
+
+    svg.addEventListener("wheel", (ev) => {
+      ev.preventDefault();
+      const p = svgPointFromEvent(svg, ev);
+      zoomGraph(ev.deltaY < 0 ? 1.18 : 1 / 1.18, p.x, p.y);
+    }, { passive:false });
+
+    svg.addEventListener("pointerdown", (ev) => {
+      pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+      if (pointers.size === 1){
+        dragging = true; moved = false;
+        downTarget = ev.target;
+        last = { x: ev.clientX, y: ev.clientY };
+        svg.classList.add("grabbing");
+        try{ svg.setPointerCapture(ev.pointerId); }catch(e){}
+      }else if (pointers.size === 2){
+        const pts = [...pointers.values()];
+        pinchDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        dragging = false;
+      }
+    });
+
+    svg.addEventListener("pointermove", (ev) => {
+      if (!pointers.has(ev.pointerId)) return;
+      pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+
+      if (pointers.size === 2){
+        const pts = [...pointers.values()];
+        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        if (pinchDist > 0 && dist > 0){
+          const rect = svg.getBoundingClientRect();
+          const midX = (pts[0].x + pts[1].x) / 2, midY = (pts[0].y + pts[1].y) / 2;
+          const p = {
+            x: graphView.x + ((midX - rect.left) / rect.width) * graphView.w,
+            y: graphView.y + ((midY - rect.top) / rect.height) * graphView.h,
+          };
+          zoomGraph(dist / pinchDist, p.x, p.y);
+        }
+        pinchDist = dist;
+        moved = true;
+        return;
+      }
+      if (!dragging || !last) return;
+      const rect = svg.getBoundingClientRect();
+      const dx = (ev.clientX - last.x) / rect.width * graphView.w;
+      const dy = (ev.clientY - last.y) / rect.height * graphView.h;
+      if (Math.abs(ev.clientX - last.x) > 3 || Math.abs(ev.clientY - last.y) > 3) moved = true;
+      graphView.x -= dx;
+      graphView.y -= dy;
+      last = { x: ev.clientX, y: ev.clientY };
+      applyGraphView();
+    });
+
+    const endPointer = (ev) => {
+      pointers.delete(ev.pointerId);
+      if (pointers.size < 2) pinchDist = 0;
+      if (pointers.size === 0){
+        dragging = false;
+        last = null;
+        svg.classList.remove("grabbing");
+      }
+    };
+    svg.addEventListener("pointerup", endPointer);
+    svg.addEventListener("pointercancel", endPointer);
+
+    svg.addEventListener("click", (ev) => {
+      // 直前がドラッグだったときは選択を変えない（フラグはここで必ず戻す）
+      const wasDrag = moved;
+      moved = false;
+      const target = downTarget || ev.target;
+      downTarget = null;
+      if (wasDrag) return;
+      const nodeEl = target.closest ? target.closest("[data-node]") : null;
+      if (nodeEl){ selectGraph({ type:"node", id: nodeEl.dataset.node }); return; }
+      const edgeEl = target.closest ? target.closest("[data-edge]") : null;
+      if (edgeEl){ selectGraph({ type:"edge", index: Number(edgeEl.dataset.edge) }); return; }
+      selectGraph(null);
+    });
+  }
+
+  function selectGraph(sel){
+    graphSelection = sel;
+    updateGraphSelection();
+  }
+
+  function updateGraphSelection(){
+    const svg = document.getElementById("graphSvg");
+    const detailEl = document.getElementById("graphDetail");
+    if (!svg || !detailEl) return;
+
+    const sel = graphSelection;
+    let hotNodes = null;     // null = 強調なし
+    let hotEdgeIdx = -1;
+
+    if (sel && sel.type === "node"){
+      hotNodes = new Set([sel.id]);
+      (relByFigure.get(sel.id) || []).forEach((e) => hotNodes.add(e.other));
+    }else if (sel && sel.type === "edge"){
+      const rel = RELATIONS[sel.index];
+      if (rel){ hotNodes = new Set([rel.from, rel.to]); hotEdgeIdx = sel.index; }
+    }
+
+    svg.querySelectorAll(".gnode").forEach((g) => {
+      const id = g.dataset.node;
+      g.classList.remove("dim", "sel");
+      if (!hotNodes) return;
+      if (sel.type === "node" && id === sel.id) g.classList.add("sel");
+      else if (sel.type === "edge" && hotNodes.has(id)) g.classList.add("sel");
+      if (!hotNodes.has(id)) g.classList.add("dim");
+    });
+
+    svg.querySelectorAll(".gedge-g").forEach((g) => {
+      const i = Number(g.dataset.edge);
+      const rel = RELATIONS[i];
+      g.classList.remove("dim", "hot");
+      if (!hotNodes) return;
+      if (hotEdgeIdx >= 0){
+        if (i === hotEdgeIdx) g.classList.add("hot"); else g.classList.add("dim");
+      }else{
+        if (rel.from === sel.id || rel.to === sel.id) g.classList.add("hot");
+        else g.classList.add("dim");
+      }
+    });
+
+    if (!sel){
+      detailEl.innerHTML = `<p class="setup-note">人物の点を押すとその人のつながりが、線を押すと2人の関係の図が表示されます。</p>`;
+      return;
+    }
+
+    if (sel.type === "edge"){
+      const rel = RELATIONS[sel.index];
+      detailEl.innerHTML = `
+        <div class="graph-detail">
+          <div class="quiz-question-label">選んだ線の関係</div>
+          ${relDiagramHtml(rel)}
+          <div class="quiz-actions">
+            <button data-goto="${escapeHtml(rel.from)}">${escapeHtml(nameOf(rel.from))}を見る</button>
+            <button data-goto="${escapeHtml(rel.to)}">${escapeHtml(nameOf(rel.to))}を見る</button>
+            <button id="graphClearBtn">選択を解除</button>
+          </div>
+        </div>
+      `;
+      const a = relArrow(rel);
+      autoSpeak(`${nameOf(a.left)}は${nameOf(a.right)}に${a.verb}。${rel.label}`);
+    }else{
+      const fig = findById(sel.id);
+      detailEl.innerHTML = `
         <div class="graph-detail">
           <div class="quiz-question-label">${escapeHtml(fig.name)} のつながり</div>
-          ${renderRelationsCard(selectedId) || "<p class=\"setup-note\">つながりが登録されていません。</p>"}
+          ${renderRelationsCard(sel.id) || `<p class="setup-note">つながりが登録されていません。</p>`}
           <div class="quiz-actions">
-            <button class="primary" data-goto="${escapeHtml(selectedId)}">${escapeHtml(fig.name)}の詳細を見る</button>
+            <button class="primary" data-goto="${escapeHtml(sel.id)}">${escapeHtml(fig.name)}の詳細を見る</button>
             <button id="graphClearBtn">選択を解除</button>
           </div>
         </div>
       `;
     }
+    const clearBtn = document.getElementById("graphClearBtn");
+    if (clearBtn) clearBtn.addEventListener("click", () => selectGraph(null));
+    bindRelationLinks();
+  }
+
+  function renderGraph(){
+    stopTimer();
+    stopSpeech();
+    quizState = null;
+    currentView = "graph";
+    if (!graphLayout) graphLayout = computeGraphLayout();
 
     resultEl.innerHTML = `
       <div class="graph-card">
         <div class="quiz-question-label">人物相関図</div>
-        <p class="graph-hint">42人・${RELATIONS.length}件のつながりを表示しています。点の大きさは、つながりの多さを表します。</p>
-        <div class="graph-scroll">
-          <svg class="graph-svg" viewBox="0 0 ${GRAPH_W} ${GRAPH_H}" role="img" aria-label="古代ギリシャ・ローマの人物相関図">
-            <g>${edgeSvg}</g>
-            <g>${nodeSvg}</g>
+        <p class="graph-hint">42人・${RELATIONS.length}件のつながりを表示しています。点の大きさはつながりの多さを表します。人物の点を押すとその人のつながりが、線を押すと2人の関係の図が出ます。図はドラッグで移動、ホイールや2本指のピンチ、右上のボタンで拡大縮小できます。</p>
+        <div class="graph-stage">
+          <svg class="graph-svg" id="graphSvg" viewBox="0 0 ${GRAPH_W} ${GRAPH_H}" role="img" aria-label="古代ギリシャ・ローマの人物相関図">
+            ${graphSvgMarkup()}
           </svg>
+          <div class="graph-tools">
+            <button class="gzoom-btn" id="gZoomIn" aria-label="拡大">＋</button>
+            <button class="gzoom-btn" id="gZoomOut" aria-label="縮小">－</button>
+            <button class="gzoom-btn reset" id="gZoomReset" aria-label="表示をリセット">全体</button>
+          </div>
         </div>
         <div class="graph-legend">
-          <span><span class="legend-dot" style="background:#3c6a5f;"></span>ギリシャ</span>
-          <span><span class="legend-dot" style="background:#a06a26;"></span>ローマ</span>
+          <span><span class="legend-dot greek"></span>ギリシャ</span>
+          <span><span class="legend-dot roman"></span>ローマ</span>
         </div>
-        ${detail}
+        <div id="graphDetail"></div>
         <div class="quiz-actions">
           <button id="graphExitBtn">検索に戻る</button>
         </div>
       </div>
     `;
 
-    resultEl.querySelectorAll("[data-node]").forEach((g) => {
-      g.addEventListener("click", () => renderGraph(g.dataset.node));
-    });
-    const clearBtn = document.getElementById("graphClearBtn");
-    if (clearBtn) clearBtn.addEventListener("click", () => renderGraph(null));
+    applyGraphView();
+    bindGraphInteraction();
+    document.getElementById("gZoomIn").addEventListener("click", () => zoomGraph(1.3));
+    document.getElementById("gZoomOut").addEventListener("click", () => zoomGraph(1 / 1.3));
+    document.getElementById("gZoomReset").addEventListener("click", () => { resetGraphView(); });
     document.getElementById("graphExitBtn").addEventListener("click", () => renderIntro());
-    bindRelationLinks();
+    updateGraphSelection();
   }
 
-  graphBtn.addEventListener("click", () => renderGraph(null));
+  graphBtn.addEventListener("click", () => {
+    graphSelection = null;
+    graphView = defaultGraphView();
+    renderGraph();
+  });
+
+  /* =========================================================
+     相性診断（閲覧・お気に入りの傾向から相性のいい人物を出す）
+     ========================================================= */
+  const DIAG_KEY = "purutaru_diag";
+
+  const DIAG_QUESTIONS = [
+    {
+      q: "どちらの話にワクワクする？",
+      a: { label: "世界のなりたちを、理屈で説明する話", genre: { "哲学者":3, "自然哲学者・科学者":2 } },
+      b: { label: "英雄や神々をめぐる、物語の世界", genre: { "詩人・文学":3, "彫刻家":1 } },
+    },
+    {
+      q: "自由研究をするなら、どちらに近い？",
+      a: { label: "観察や実験でたしかめる", genre: { "自然哲学者・科学者":3, "医学・博物学":2 } },
+      b: { label: "昔の出来事を調べてまとめる", genre: { "歴史家・地理学者":3 } },
+    },
+    {
+      q: "人前に立つなら、どちらを選ぶ？",
+      a: { label: "筋道を立てて、ことばで説得する", genre: { "政治家・弁論家":3, "政治家・軍人":2, "哲学者":1 } },
+      b: { label: "作品をつくって、かたちで伝える", genre: { "彫刻家":3, "詩人・文学":2 } },
+    },
+    {
+      q: "気になるのはどちらの国？",
+      a: { label: "ギリシャ", region: { "ギリシャ":4 } },
+      b: { label: "ローマ", region: { "ローマ":4 } },
+    },
+  ];
+
+  function loadDiag(){ return readStore(DIAG_KEY, null); }
+  function saveDiag(data){ writeStore(DIAG_KEY, data); }
+
+  function buildProfile(){
+    const genre = {}, region = {};
+    let weight = 0;
+    const add = (fig, w) => {
+      genre[fig.genre]   = (genre[fig.genre]   || 0) + w;
+      region[fig.category] = (region[fig.category] || 0) + w;
+      weight += w;
+    };
+    favorites.forEach((id) => { const f = findById(id); if (f) add(f, 3); });
+    Object.keys(viewCounts).forEach((id) => {
+      const f = findById(id);
+      if (f) add(f, Math.min(viewCounts[id], 3));
+    });
+    const diag = loadDiag();
+    if (diag){
+      Object.keys(diag.genre || {}).forEach((g) => { genre[g] = (genre[g] || 0) + diag.genre[g]; weight += diag.genre[g]; });
+      Object.keys(diag.region || {}).forEach((r) => { region[r] = (region[r] || 0) + diag.region[r]; weight += diag.region[r]; });
+    }
+    return { genre, region, weight, hasAnswers: !!diag };
+  }
+
+  function affinityRanking(profile){
+    const gVals = Object.keys(profile.genre).map((k) => profile.genre[k]);
+    const rVals = Object.keys(profile.region).map((k) => profile.region[k]);
+    const gMax = Math.max(1, ...gVals);
+    const rMax = Math.max(1, ...rVals);
+    const known = new Set([...favorites, ...Object.keys(viewCounts)]);
+    const knownArr = [...known];
+
+    const maxDeg = Math.max(1, ...FIGURES.map((f) => ADJ.get(f.id).size));
+    return FIGURES.map((f) => {
+      const gs = (profile.genre[f.genre] || 0) / gMax;
+      const rs = (profile.region[f.category] || 0) / rMax;
+      const linkedTo = knownArr.filter((id) => id !== f.id && ADJ.get(f.id) && ADJ.get(f.id).has(id));
+      const link = knownArr.length ? Math.min(1, linkedTo.length / Math.min(3, knownArr.length)) : 0;
+      // 最後の0.05分は「相関図でのつながりの多さ」。同点になったときの差にもなる。
+      const hub = ADJ.get(f.id).size / maxDeg;
+      const score = 0.5 * gs + 0.2 * rs + 0.25 * link + 0.05 * hub;
+      return { fig: f, score, gs, rs, link, linkedTo, known: known.has(f.id) };
+    }).sort((a, b) => b.score - a.score);
+  }
+
+  function matchReason(item, profile){
+    const reasons = [];
+    if (item.gs >= 0.6) reasons.push(`あなたがよく選んでいる「${item.fig.genre}」の一人です`);
+    else if (item.gs > 0) reasons.push(`「${item.fig.genre}」にも興味が向いています`);
+    if (item.linkedTo.length > 0) reasons.push(`あなたが見た${nameOf(item.linkedTo[0])}と直接つながりがあります`);
+    if (item.rs >= 0.6) reasons.push(`${item.fig.category}の人物です`);
+    if (reasons.length === 0) reasons.push("まだ見ていない分野を広げる一人としておすすめです");
+    return reasons.slice(0, 2).join("。") + "。";
+  }
+
+  function meterListHtml(profile){
+    const entries = Object.keys(profile.genre)
+      .map((k) => ({ name: k, v: profile.genre[k] }))
+      .sort((a, b) => b.v - a.v)
+      .slice(0, 5);
+    if (entries.length === 0) return "";
+    const total = entries.reduce((s, e) => s + e.v, 0) || 1;
+    const rows = entries.map((e) => {
+      const pct = Math.round((e.v / total) * 100);
+      return `
+        <div class="meter-row">
+          <span class="meter-name">${escapeHtml(e.name)}</span>
+          <span class="meter-track"><span class="meter-fill" style="width:${pct}%"></span></span>
+          <span class="meter-val">${pct}%</span>
+        </div>`;
+    }).join("");
+    return `<div class="meter-list" role="img" aria-label="あなたの興味の傾向">${rows}</div>`;
+  }
+
+  let diagAnswers = null;   // 質問に答えている途中の集計
+  let diagStep = 0;
+
+  function renderDiagnosis(){
+    stopTimer();
+    stopSpeech();
+    quizState = null;
+    currentView = "diagnosis";
+    const profile = buildProfile();
+
+    if (profile.weight < 4){
+      diagAnswers = { genre:{}, region:{} };
+      diagStep = 0;
+      renderDiagQuestion();
+      return;
+    }
+    renderDiagResult(profile);
+  }
+
+  function renderDiagQuestion(){
+    currentView = "diagnosis";
+    const q = DIAG_QUESTIONS[diagStep];
+    resultEl.innerHTML = `
+      <div class="diag-card">
+        <h2>相性診断（${diagStep + 1} / ${DIAG_QUESTIONS.length}）</h2>
+        <p class="diag-lead">まだ見た人物が少ないので、かんたんな質問から好みを調べます。</p>
+        <p class="diag-q">${escapeHtml(q.q)}</p>
+        <div class="diag-opts">
+          <button class="diag-opt" data-choice="a">${escapeHtml(q.a.label)}</button>
+          <button class="diag-opt" data-choice="b">${escapeHtml(q.b.label)}</button>
+        </div>
+      </div>
+    `;
+    resultEl.querySelectorAll(".diag-opt").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const choice = q[btn.dataset.choice];
+        Object.keys(choice.genre || {}).forEach((g) => {
+          diagAnswers.genre[g] = (diagAnswers.genre[g] || 0) + choice.genre[g];
+        });
+        Object.keys(choice.region || {}).forEach((r) => {
+          diagAnswers.region[r] = (diagAnswers.region[r] || 0) + choice.region[r];
+        });
+        diagStep++;
+        if (diagStep < DIAG_QUESTIONS.length){
+          renderDiagQuestion();
+        }else{
+          saveDiag(diagAnswers);
+          renderDiagResult(buildProfile());
+        }
+      });
+    });
+    autoSpeak(`${q.q}。1、${q.a.label}。2、${q.b.label}。`);
+  }
+
+  function renderDiagResult(profile){
+    currentView = "diagnosis";
+    const ranking = affinityRanking(profile);
+    const fresh = ranking.filter((r) => !r.known);
+    const top = (fresh.length >= 3 ? fresh : ranking).slice(0, 3);
+
+    const viewedCount = Object.keys(viewCounts).length;
+    const bases = [];
+    if (favorites.size > 0) bases.push(`お気に入り${favorites.size}人`);
+    if (viewedCount > 0) bases.push(`見た人物${viewedCount}人`);
+    if (profile.hasAnswers) bases.push("質問の回答");
+    const lead = `${bases.join("・")}をもとに、あなたの興味の傾向を計算しました。`;
+
+    const items = top.map((item, i) => `
+      <li class="match-item">
+        <div class="match-head">
+          <span class="match-rank">${i + 1}位</span>
+          <span class="match-name">${escapeHtml(item.fig.name)}</span>
+          <span class="match-score">相性 ${Math.round(item.score * 100)}%</span>
+        </div>
+        <p class="match-reason">${escapeHtml(matchReason(item, profile))}</p>
+        <p class="match-ach">${escapeHtml(item.fig.achievement || "")}</p>
+        <button class="primary" data-goto="${escapeHtml(item.fig.id)}">${escapeHtml(item.fig.name)}のもう一つの顔を見る</button>
+      </li>
+    `).join("");
+
+    const speakText = `相性診断の結果。${lead}` +
+      top.map((t, i) => `${i + 1}位、${t.fig.name}、相性${Math.round(t.score * 100)}パーセント。`).join("");
+
+    resultEl.innerHTML = `
+      <div class="diag-card">
+        <div class="card-head">
+          <h2>あなたと相性のいい人物</h2>
+          <div class="card-tools">${speakBtnHtml(speakText, "診断結果を読み上げる")}</div>
+        </div>
+        <p class="diag-lead">${escapeHtml(lead)}</p>
+        ${meterListHtml(profile)}
+        <ul class="match-list">${items}</ul>
+        <div class="quiz-actions">
+          <button id="diagRetryBtn">質問に答えて診断し直す</button>
+          <button id="diagExitBtn">検索に戻る</button>
+        </div>
+        <p class="setup-note">この診断は、あなたがこのブラウザで見た人物・お気に入り・質問の回答だけを使って計算しています。データが外部に送られることはありません。</p>
+      </div>
+    `;
+    bindRelationLinks();
+    bindSpeakButtons();
+    document.getElementById("diagRetryBtn").addEventListener("click", () => {
+      diagAnswers = { genre:{}, region:{} };
+      diagStep = 0;
+      renderDiagQuestion();
+    });
+    document.getElementById("diagExitBtn").addEventListener("click", () => renderIntro());
+    autoSpeak(speakText);
+  }
+
+  diagBtn.addEventListener("click", renderDiagnosis);
+
+  /* =========================================================
+     読み上げ・表示設定（アクセシビリティ）
+     ========================================================= */
+  function renderA11y(){
+    stopTimer();
+    quizState = null;
+    currentView = "a11y";
+
+    const opt = (group, value, text, current) =>
+      `<button class="setup-opt${String(current) === String(value) ? " active" : ""}" data-a11y="${group}" data-value="${escapeHtml(String(value))}" aria-pressed="${String(current) === String(value)}">${escapeHtml(text)}</button>`;
+
+    const speechNote = speechAvailable
+      ? "このブラウザは音声読み上げに対応しています。"
+      : "このブラウザは音声読み上げに対応していません（文字サイズと配色の設定は使えます）。";
+
+    resultEl.innerHTML = `
+      <div class="a11y-card">
+        <h2>読み上げ・表示設定</h2>
+
+        <div class="a11y-group">
+          <div class="setup-label" id="lblSpeak">自動で読み上げる</div>
+          <div class="setup-opts" role="group" aria-labelledby="lblSpeak">
+            ${opt("autoSpeak", "true", "する", String(a11y.autoSpeak))}
+            ${opt("autoSpeak", "false", "しない", String(a11y.autoSpeak))}
+          </div>
+          <p class="setup-note">「する」にすると、人物・クイズ・診断の内容が表示のたびに読み上げられます。個別の🔊ボタンはいつでも使えます。</p>
+        </div>
+
+        <div class="a11y-group">
+          <div class="setup-label" id="lblRate">読み上げの速さ</div>
+          <div class="setup-opts" role="group" aria-labelledby="lblRate">
+            ${opt("rate", "0.8", "ゆっくり", a11y.rate)}
+            ${opt("rate", "1", "ふつう", a11y.rate)}
+            ${opt("rate", "1.3", "はやい", a11y.rate)}
+          </div>
+        </div>
+
+        <div class="a11y-group">
+          <div class="setup-label" id="lblFont">文字の大きさ</div>
+          <div class="setup-opts" role="group" aria-labelledby="lblFont">
+            ${opt("fontSize", "normal", "標準", a11y.fontSize)}
+            ${opt("fontSize", "large", "大きめ", a11y.fontSize)}
+            ${opt("fontSize", "xlarge", "とても大きい", a11y.fontSize)}
+          </div>
+        </div>
+
+        <div class="a11y-group">
+          <div class="setup-label" id="lblContrast">配色</div>
+          <div class="setup-opts" role="group" aria-labelledby="lblContrast">
+            ${opt("contrast", "false", "標準（羊皮紙）", String(a11y.contrast))}
+            ${opt("contrast", "true", "高コントラスト（黒地）", String(a11y.contrast))}
+          </div>
+        </div>
+
+        <div class="quiz-actions">
+          <button class="primary" id="a11yTestBtn">読み上げを試す</button>
+          <button id="a11yStopBtn">読み上げを止める</button>
+          <button id="a11yExitBtn">検索に戻る</button>
+        </div>
+        <p class="a11y-status">${escapeHtml(speechNote)}　設定はこのブラウザに保存され、次に開いたときも引き継がれます。キーボードのTabキーとEnterキーだけでも、すべての機能を操作できます。</p>
+      </div>
+    `;
+
+    resultEl.querySelectorAll("[data-a11y]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.a11y;
+        const raw = btn.dataset.value;
+        if (key === "autoSpeak" || key === "contrast") a11y[key] = (raw === "true");
+        else if (key === "rate") a11y[key] = Number(raw);
+        else a11y[key] = raw;
+        applyA11y();
+        renderA11y();
+      });
+    });
+    document.getElementById("a11yTestBtn").addEventListener("click", () => {
+      const ok = speak("プルタルへようこそ。教科書には載っていない、人物のもう一つの顔を紹介します。");
+      if (!ok) document.getElementById("a11yTestBtn").textContent = "読み上げ非対応です";
+    });
+    document.getElementById("a11yStopBtn").addEventListener("click", stopSpeech);
+    document.getElementById("a11yExitBtn").addEventListener("click", () => renderIntro());
+  }
+
+  a11yBtn.addEventListener("click", renderA11y);
 
   /* =========================================================
      はじめの画面
      ========================================================= */
   function renderIntro(){
     stopTimer();
+    stopSpeech();
     quizState = null;
+    currentView = "intro";
+    currentFigureId = null;
     const history = loadQuizHistory();
     let historyHtml = "";
     if (history.length > 0){
@@ -1075,7 +2082,8 @@
       <div class="intro">
         <h2>プルタルとは</h2>
         <p>プルタルは、世界史の授業や教科書には載っていない、人物の「もう一つの顔」を検索できるアプリです。教科書の一行の説明だけでは印象に残りにくい人物も、意外なエピソードを知ることで記憶に残りやすくなります。</p>
-        <p>上の検索欄に人物名を入力するか、「収録人物の一覧を表示」から人物を選んでみてください。「クイズに挑戦する」では出題形式・範囲・制限時間を選んで力試しができ、「相関図を見る」では人物同士のつながりをたどれます。</p>
+        <p>上の検索欄に人物名を入力するか、「収録人物の一覧を表示」から人物を選んでみてください。人物ごとに、その人が歴史からいなくなったら何が失われるのかを、${RELATIONS.length}件の関係データから計算して表示します。</p>
+        <p>「クイズに挑戦する」では出題形式・範囲・制限時間を選んで力試しができ、「相関図を見る」では42人のつながりをたどれます。「相性診断」では、あなたの興味に近い人物を見つけられます。「読み上げ・表示設定」から、音声読み上げ・文字の大きさ・高コントラスト表示に切り替えられます。</p>
         ${historyHtml}
       </div>
     `;
