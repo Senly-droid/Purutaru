@@ -313,6 +313,29 @@
   .intro p{margin:0 0 0.7rem; font-size:0.92rem;}
   .intro p:last-child{margin-bottom:0;}
   .intro-history{font-size:0.85rem; color:var(--patina); margin-top:0.9rem; padding-top:0.9rem; border-top:1px dashed var(--line);}
+
+  /* --- 一覧表 --- */
+  .table-card{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:1.2rem 1.3rem;}
+  .table-card h2{font-size:1rem; margin:0 0 0.6rem; color:var(--patina);}
+  .table-card > p{margin:0 0 0.9rem; font-size:0.88rem; color:var(--muted);}
+  .table-col-toggles{display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;}
+  .table-col-toggles label{
+    display:flex; align-items:center; gap:0.4rem; font-size:0.85rem;
+    border:1px solid var(--line); border-radius:6px; padding:0.4rem 0.7rem; cursor:pointer; background:var(--ground);
+  }
+  .table-scroll{overflow-x:auto; border:1px solid var(--line); border-radius:6px;}
+  .ptable{border-collapse:collapse; width:100%; min-width:480px; font-size:0.88rem;}
+  .ptable th, .ptable td{padding:0.55rem 0.7rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+  .ptable th{background:var(--surface-2); font-weight:700;}
+  .ptable tbody tr:hover{background:var(--surface-2);}
+  .ptable .name-btn{
+    background:transparent; border:none; color:var(--patina); font-weight:600; padding:0;
+    cursor:pointer; text-decoration:underline; font-size:inherit; font-family:inherit; white-space:nowrap;
+  }
+  .ptable.hide-name .col-name{display:none;}
+  .ptable.hide-achievement .col-achievement{display:none;}
+  .ptable.hide-hidden .col-hidden{display:none;}
+  .table-count{font-size:0.8rem; color:var(--muted); margin-top:0.7rem;}
 </style>
 </head>
 <body>
@@ -341,6 +364,7 @@
     <button class="chip-toggle accent" id="quizStartBtn">クイズに挑戦する</button>
     <button class="chip-toggle accent" id="graphBtn">相関図を見る</button>
     <button class="chip-toggle accent" id="diagBtn">相性診断</button>
+    <button class="chip-toggle accent" id="tableBtn">一覧表で見る</button>
     <button class="chip-toggle" id="a11yBtn">読み上げ・表示設定</button>
   </div>
   <div class="filter-row" id="filterRow" hidden></div>
@@ -365,12 +389,13 @@
   const quizStartBtn = document.getElementById("quizStartBtn");
   const graphBtn   = document.getElementById("graphBtn");
   const diagBtn    = document.getElementById("diagBtn");
+  const tableBtn   = document.getElementById("tableBtn");
   const a11yBtn    = document.getElementById("a11yBtn");
 
   /* =========================================================
      画面の状態
      ========================================================= */
-  let currentView = "intro";      // intro / figure / wiki / quiz / graph / diagnosis / a11y
+  let currentView = "intro";      // intro / figure / wiki / quiz / graph / diagnosis / table / a11y
   let currentFigureId = null;
   let quizState = null;
 
@@ -2112,6 +2137,81 @@
   a11yBtn.addEventListener("click", renderA11y);
 
   /* =========================================================
+     一覧表（人物名・実績・もう一つの顔【簡略版】）
+     ========================================================= */
+  const TABLE_COLS_KEY = "purutaru_table_cols";
+  const tableCols = Object.assign(
+    { name:true, achievement:true, hidden:true },
+    readStore(TABLE_COLS_KEY, {})
+  );
+
+  function renderTable(){
+    stopTimer();
+    stopSpeech();
+    quizState = null;
+    currentView = "table";
+    currentFigureId = null;
+
+    const colToggle = (key, label) => `
+      <label>
+        <input type="checkbox" data-col="${key}" ${tableCols[key] ? "checked" : ""}>
+        ${escapeHtml(label)}
+      </label>
+    `;
+
+    const rows = FIGURES.map((f) => `
+      <tr>
+        <td class="col-name"><button class="name-btn" data-goto="${escapeHtml(f.id)}">${escapeHtml(f.name)}</button></td>
+        <td class="col-achievement">${escapeHtml(f.achievement)}</td>
+        <td class="col-hidden">${escapeHtml(f.hidden_face_short)}</td>
+      </tr>
+    `).join("");
+
+    const tableClass = [
+      "ptable",
+      tableCols.name ? "" : "hide-name",
+      tableCols.achievement ? "" : "hide-achievement",
+      tableCols.hidden ? "" : "hide-hidden",
+    ].filter(Boolean).join(" ");
+
+    resultEl.innerHTML = `
+      <div class="table-card">
+        <h2>人物一覧表</h2>
+        <p>収録している${FIGURES.length}人の「人物名」「実績」「もう一つの顔（簡略版）」を一覧で見られます。チェックを外すと、その列を隠せます。人物名を押すと、その人物の詳細（出典つき）を表示します。</p>
+        <div class="table-col-toggles" role="group" aria-label="表示する列の選択">
+          ${colToggle("name", "人物名")}
+          ${colToggle("achievement", "実績")}
+          ${colToggle("hidden", "もう一つの顔（簡略版）")}
+        </div>
+        <div class="table-scroll">
+          <table class="${tableClass}">
+            <thead>
+              <tr>
+                <th class="col-name">人物名</th>
+                <th class="col-achievement">実績</th>
+                <th class="col-hidden">もう一つの顔（簡略版）</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <p class="table-count">全${FIGURES.length}人を表示しています。</p>
+      </div>
+    `;
+
+    resultEl.querySelectorAll("[data-col]").forEach((cb) => {
+      cb.addEventListener("change", () => {
+        tableCols[cb.dataset.col] = cb.checked;
+        writeStore(TABLE_COLS_KEY, tableCols);
+        renderTable();
+      });
+    });
+    bindRelationLinks();
+  }
+
+  tableBtn.addEventListener("click", renderTable);
+
+  /* =========================================================
      はじめの画面
      ========================================================= */
   function renderIntro(){
@@ -2133,7 +2233,7 @@
         <h2>プルタルとは</h2>
         <p>プルタルは、世界史の授業や教科書には載っていない、人物の「もう一つの顔」を検索できるアプリです。教科書の一行の説明だけでは印象に残りにくい人物も、意外なエピソードを知ることで記憶に残りやすくなります。</p>
         <p>上の検索欄に人物名を入力するか、「収録人物の一覧を表示」から人物を選んでみてください。人物ごとに、その人が歴史からいなくなったら何が失われるのかを、${RELATIONS.length}件の関係データから計算して表示します。</p>
-        <p>「クイズに挑戦する」では出題形式・範囲・制限時間を選んで力試しができ、「相関図を見る」では42人のつながりをたどれます。「相性診断」では、あなたの興味に近い人物を見つけられます。「読み上げ・表示設定」から、音声読み上げ・文字の大きさ・高コントラスト表示に切り替えられます。</p>
+        <p>「クイズに挑戦する」では出題形式・範囲・制限時間を選んで力試しができ、「相関図を見る」では42人のつながりをたどれます。「相性診断」では、あなたの興味に近い人物を見つけられます。「一覧表で見る」では、人物名・実績・もう一つの顔（簡略版）を1つの表にまとめて見比べられ、列ごとに表示・非表示を切り替えられます。「読み上げ・表示設定」から、音声読み上げ・文字の大きさ・高コントラスト表示に切り替えられます。</p>
         ${historyHtml}
       </div>
     `;
