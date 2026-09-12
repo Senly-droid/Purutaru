@@ -1,7 +1,5 @@
 # プルタル（Purutaru）
 
-第7回学力向上アプリコンテスト応募作品。
-
 ## 1. 作品名
 
 **プルタル（Purutaru）**
@@ -82,7 +80,7 @@
 高コントラスト表示（黒地）に対応しています。すべての操作はキーボードの
 TabキーとEnterキーだけでも行えます。設定はブラウザに保存されます。
 
-### 独創性のポイント
+### ポイント
 
 教科書の記述を否定・置き換えるのではなく、教科書の記述を起点に「もう一つの顔」
 を足すことで、暗記量を増やさずに興味と定着を高める設計にしています。
@@ -153,30 +151,6 @@ purutaru-pages/
 
 `https://あなたのユーザー名.github.io/Purutaru/`
 
-## GitHub Pagesでの公開手順（開発メモ）
-
-1. GitHubで新しいリポジトリを作成する（例: `Purutaru`）
-2. このフォルダの中身（`index.html`、`data/`、`README.md`）をリポジトリのルートに追加してpush
-
-   ```bash
-   cd purutaru-pages
-   git init
-   git add .
-   git commit -m "プルタル: 影響分析・相性診断・相関図の操作・読み上げに対応"
-   git branch -M main
-   git remote add origin https://github.com/あなたのユーザー名/Purutaru.git
-   git push -u origin main
-   ```
-
-   ※ GitHubのWeb UIから「Add file」→「Upload files」で
-   `index.html`・`README.md`・`data/figures.js`・`data/relations.js`
-   をアップロードする方法でも公開できます（`data/`の階層が保たれているか要確認）。
-
-3. GitHubのリポジトリ画面で「Settings」→「Pages」を開く
-4. 「Build and deployment」の「Source」で `Deploy from a branch` を選択
-5. 「Branch」で `main` ブランチ、フォルダは `/ (root)` を選んで保存
-6. 数分待つと `https://あなたのユーザー名.github.io/Purutaru/` で公開されます
-
 ## 人物データの追加方法
 
 `data/figures.js` の配列に、以下の形式でオブジェクトを追加します。
@@ -217,7 +191,7 @@ purutaru-pages/
 fromが師・toが弟子、`type: "影響"` はfromがtoから影響を受けた、という意味に
 なります。この向きをもとに、相関図の矢印と影響の連鎖が計算されます。
 
-## 5. 今後の予定（選考通過後）
+## 5. 今後の予定
 
 固定フォーマット応答から、AI連携による対話的な深掘り機能・未収録人物のその場生成
 への拡張を予定しています。その際はAPIキーをブラウザに露出させないため、
